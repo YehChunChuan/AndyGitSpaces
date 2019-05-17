@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">PigFragment!AreUPig?</string>
+
+
+
+    <string name="Temperature_Range">正常範圍:20~25</string>
+    <string name="PM25_Range">正常範圍: &lt; 30</string>
+    <string name="NH3_Range">正常範圍: &lt; 5 </string>
+    <string name="HS_Range">正常範圍:20~25</string>
+
+    <string name="Humidity_Range">正常範圍:50~75</string>
+    <string name="CO2_Range">正常範圍: &lt; 900</string>
+    <string name="CH4_Range">正常範圍: &lt; 2 </string>
+
+    <string name="UPT">上次更新時間:</string>
+
+</resources>
