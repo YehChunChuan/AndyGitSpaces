@@ -30,6 +30,7 @@ public class HistoricalChartFragment extends Fragment {
 			Bundle savedInstanceState) {
 		Log.d("=====>", "HistoricalChartFragment onCreateView");
 		return inflater.inflate(R.layout.frg_historicalchart, container, false);
+		//Testsourcetree
 	}
 
 	@Override
