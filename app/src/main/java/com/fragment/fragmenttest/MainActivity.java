@@ -20,6 +20,8 @@ import android.support.v4.app.FragmentTabHost;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.webkit.WebView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -676,4 +678,6 @@ public class MainActivity extends AppCompatActivity {
 //            //ProgressDialog pd3 = ProgressDialog.show(this, "提示", "正在登陆中", false, true);
 //        }
     }
+
+
 }

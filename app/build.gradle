@@ -28,7 +28,8 @@ dependencies {
     implementation fileTree(dir: 'D:\\Android\\AndroidStudio_postgresql931102jdbc41', include: ['*.aar', '*.jar'], exclude: [])
     implementation files('D:\\JAVA\\JavaPostgreExample\\JavaPostgreExample\\lib\\postgresql-9.3-1102.jdbc41')
     implementation files('postgresql-9.3-1102.jdbc41')
-    implementation 'com.github.PhilJay:MPAndroidChart:v2.2.5'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
+    //'com.github.PhilJay:MPAndroidChart:v2.2.5'
 
 
 

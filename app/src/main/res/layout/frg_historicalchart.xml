@@ -17,14 +17,14 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-            <WebView
+           <!-- <WebView
                 android:id="@+id/webview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="0dp"
                 android:layout_marginBottom="0dp" />
-<!--
-            <TextView
+
+               <TextView
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -32,6 +32,10 @@
                 android:layout_marginTop="94dp"
                 android:text="Frg_HistoricalChart"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
+           -->
+
+
+
 
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/chart1"
@@ -45,7 +49,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="300dp" />
 
-                -->
+
             </LinearLayout>
 
         </ScrollView>
