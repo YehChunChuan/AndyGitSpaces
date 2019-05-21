@@ -148,8 +148,8 @@ public class HistoricalChartFragment extends Fragment {
 			MainActivity activity = (MainActivity) fragmentActivity;
 		}
 
-		chart1 = (LineChart) getView().findViewById(R.id.chart1);
-		chart2 = (LineChart) getView().findViewById(R.id.chart2);
+		//chart1 = (LineChart) getView().findViewById(R.id.chart1);
+		//chart2 = (LineChart) getView().findViewById(R.id.chart2);
 		//TextView txtResult = (TextView) this.getView().findViewById(R.id.textView1);
 		//txtResult.setText(value);
 

@@ -23,7 +23,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="0dp"
                 android:layout_marginBottom="0dp" />
-
+<!--
             <TextView
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
@@ -44,6 +44,8 @@
                 android:id="@+id/chart2"
                 android:layout_width="match_parent"
                 android:layout_height="300dp" />
+
+                -->
             </LinearLayout>
 
         </ScrollView>

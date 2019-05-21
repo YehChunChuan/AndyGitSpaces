@@ -13,11 +13,13 @@ import android.icu.text.SimpleDateFormat;
 import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -44,6 +46,7 @@ import static android.support.v4.content.ContextCompat.getSystemService;
 import static com.fragment.fragmenttest.R.*;
 
 
+@RequiresApi(api = Build.VERSION_CODES.N)
 public class RealTimeFragment extends Fragment {
 	
 	private String value = "";
@@ -934,7 +937,7 @@ public class RealTimeFragment extends Fragment {
 	@Override
 	public void onPause() {
 		super.onPause();
-		Toast.makeText(getActivity().getApplicationContext(), "onPause!!!!" , Toast.LENGTH_LONG).show();
+		//Toast.makeText(getActivity().getApplicationContext(), "onPause!!!!" , Toast.LENGTH_LONG).show();
 		mThread.quit();
 		//mHandler.removeCallbacks(mThread);
 	}
@@ -947,7 +950,7 @@ public class RealTimeFragment extends Fragment {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		Toast.makeText(getActivity().getApplicationContext(), "onDestroy!!!!" , Toast.LENGTH_LONG).show();
+		//Toast.makeText(getActivity().getApplicationContext(), "onDestroy!!!!" , Toast.LENGTH_LONG).show();
 		mHandler.removeCallbacks(mThread);
 	}
 }
