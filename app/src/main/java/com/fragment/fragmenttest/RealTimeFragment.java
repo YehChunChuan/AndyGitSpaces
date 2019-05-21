@@ -505,15 +505,11 @@ public class RealTimeFragment extends Fragment {
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 			//ddf1.setMaximumFractionDigits(4);
-
-
 			if(msg!=null){
 				switch (msg.what) {
-
 					// 根据what字段辨识出消息
 					case 1:
 						// 取出数据包，解包得数据
-
 						Bundle bundle = msg.getData();
 						climate2=bundle.getString("climate");
 						pm252=bundle.getString("pm25");
@@ -530,8 +526,6 @@ public class RealTimeFragment extends Fragment {
 						humidityT=bundle.getString("humidityT");
 						co2T=bundle.getString("co2T");
 						ch4T=bundle.getString("ch4T");
-
-
 						try {
 							 climateD= Double.parseDouble(df.format(Double.parseDouble(climate2)));
 							 pm25D= Double.parseDouble(df.format(Double.parseDouble(pm252)));
@@ -564,7 +558,6 @@ public class RealTimeFragment extends Fragment {
 							textViewPM25_Data.setText(String.format("%.1f", pm25D));
 							textViewNH3_Data.setText(String.format("%.3f", nh3D));
 							textViewH2S_Data.setText(String.format("%.1f", h2sD));
-
 							textHumidity_Time.setText(humidityT);
 							textCO2_Time.setText(co2T);
 							textViewCH4_Time.setText(ch4T);
@@ -572,8 +565,6 @@ public class RealTimeFragment extends Fragment {
 							textViewPM25_Time.setText(pm25T);
 							textViewNH3_Time.setText(nh3T);
 							textViewH2S_Time.setText(h2s);
-
-
 						}catch (Exception ex){
 							//Toast.makeText(getActivity().getApplicationContext(),"顯示Message有錯誤",Toast.LENGTH_SHORT).show();
 							Log.e("顯示Message有錯誤",ex.getMessage());
@@ -586,7 +577,6 @@ public class RealTimeFragment extends Fragment {
 			}
 		}
 	};
-
 
 	//工作名稱 r1 的工作內容
 	private  Runnable r1=new Runnable () {
@@ -603,15 +593,12 @@ public class RealTimeFragment extends Fragment {
 			System.out.println(sdf.format(beforDate));
 			Log.e("現在時間減" + tine + "毫秒鐘:", sdf.format(beforDate));
 			//Toast.makeText(getContext(), "現在時間減"+tine+"毫秒鐘:" + sdf.format(beforDate), Toast.LENGTH_LONG).show();
-
-
 			Connection con = null;
 			PreparedStatement ps = null;
 			ResultSet rs = null;
 			String count = "0";
 			Statement st = null;
 			StringBuilder stringBuilder = new StringBuilder();
-
 			try {
 				//STEP 3: Open a connection
 				System.out.println("Connecting to database...");
@@ -629,8 +616,6 @@ public class RealTimeFragment extends Fragment {
 					//con.close();
 				}
 //-----------------------------------------------------------------------------------------------------------------------------------------------
-
-
 //            //STEP 4: Execute a query
 				//2019-04-26 00:00:00
 				System.out.println("Creating statement...");
