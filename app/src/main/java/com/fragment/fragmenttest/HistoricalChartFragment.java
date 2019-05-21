@@ -10,6 +10,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.TextView;
 
 
@@ -70,6 +73,8 @@ public class HistoricalChartFragment extends Fragment {
 	String ch42;
 	//endregion
 
+	private  WebView mWebView;
+
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -88,14 +93,49 @@ public class HistoricalChartFragment extends Fragment {
 	}
 
 	@Override
+	public void onStart() {
+		super.onStart();
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+	}
+
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+	}
+
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
 		Log.d("=====>", "HistoricalChartFragment onCreateView");
-		//mLineChart = (LineChart) (R.id.chart1);
-
 		//記得要定義Layout View
-		return inflater.inflate(R.layout.frg_historicalchart, container, false);
+		//region 加入webview的使用
+		View v=inflater.inflate(R.layout.frg_historicalchart, container, false);
+		mWebView = (WebView) v.findViewById(R.id.webview);
+		mWebView.loadUrl("http://54.189.167.79/chart");
+		// Enable Javascript
+		WebSettings webSettings = mWebView.getSettings();
+		webSettings.setJavaScriptEnabled(true);
+		// Force links and redirects to open in the WebView instead of in a browser
+		mWebView.setWebViewClient(new WebViewClient());
+		//endregion
+
+		return v;
 	}
+
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
@@ -112,6 +152,9 @@ public class HistoricalChartFragment extends Fragment {
 		chart2 = (LineChart) getView().findViewById(R.id.chart2);
 		//TextView txtResult = (TextView) this.getView().findViewById(R.id.textView1);
 		//txtResult.setText(value);
+
+
+
 	}
 
 	private class PigsAppsTask extends AsyncTask<String, Integer, String> {
