@@ -33,7 +33,7 @@ public class HistoricalChartFragment extends Fragment {
 	private LineChart chart2;
 
 
-	//regaion 變數群
+	//region 變數群
 	private String[] record_id_arry;
 	private String[] sensor_id_arry;
 	private String[] sensor_category_arry;
@@ -127,8 +127,8 @@ public class HistoricalChartFragment extends Fragment {
 		protected String doInBackground(String... params) {
 		//TODOAuto-generated method stub
 			Log.d(TAG, "doInBackground params[0]=" + params[0]);
-			//publishProgress(10);
-			//return100L;
+
+
 			return (String) "";
 		}
 
