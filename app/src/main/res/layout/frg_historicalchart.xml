@@ -3,45 +3,52 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <ScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/startTimeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="開始時間" />
+                <TextView
+                    android:id="@+id/startTimeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
-           <!-- <WebView
-                android:id="@+id/webview"
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="0dp"
-                android:layout_marginBottom="0dp" />
-
-               <TextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="105dp"
-                android:layout_marginTop="94dp"
-                android:text="Frg_HistoricalChart"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-           -->
-
-
-
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/endTimeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="結束時間" />
+                <TextView
+                    android:id="@+id/endTimeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
 
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/chart1"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
-                android:layout_marginTop="87dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="44dp" />
 
             <com.github.mikephil.charting.charts.LineChart
@@ -49,9 +56,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="300dp" />
 
-
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
             </LinearLayout>
-
-        </ScrollView>
-    </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>
