@@ -57,7 +57,7 @@ public class HistoricalChartFragment extends Fragment {
 	private String[] read_time_arry;
 	private int ID;
 	//private Date now;
-	private android.icu.text.SimpleDateFormat sdf;
+	private SimpleDateFormat sdf;
 	private int tine;
 	private Date now;
 	private Date beforDate;
@@ -100,6 +100,15 @@ public class HistoricalChartFragment extends Fragment {
 	private ArrayList<String> humidity_arraylist = new ArrayList<String>();
 	private ArrayList<String> co2_arraylist = new ArrayList<String>();
 	private ArrayList<String> ch4_arraylist = new ArrayList<String>();
+
+	private ArrayList<String> climate_time_arraylist = new ArrayList<String>();
+	private ArrayList<String> pm25_time_arraylist = new ArrayList<String>();
+	private ArrayList<String> nh3_time_arraylist = new ArrayList<String>();
+	private ArrayList<String> h2s_time_arraylist = new ArrayList<String>();
+	private ArrayList<String> humidity_time_arraylist = new ArrayList<String>();
+	private ArrayList<String> co2_time_arraylist = new ArrayList<String>();
+	private ArrayList<String> ch4_time_arraylist = new ArrayList<String>();
+
 	//endregion
 
 	private  WebView mWebView;
@@ -181,43 +190,18 @@ public class HistoricalChartFragment extends Fragment {
 		}
 		PostgresqlTask TestClient = new PostgresqlTask();
             //TestClient.execute("2019-04-29 10:00:00");300000   600000   10000
-            tine=10000;
-			sdf = new android.icu.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            tine=100000000;
+			sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			now=new Date();
             beforDate = new Date(now.getTime() - tine);
             //System.out.println(sdf.format(beforDate));
-            Log.e("現在時間減10分鐘:", sdf.format(beforDate));
+			String Time = sdf.format(beforDate);
+            Log.e("現在時間減10分鐘:", Time);
             //Toast.makeText(MainActivity.this, "現在時間減"+tine+"秒鐘:" + sdf.format(beforDate), Toast.LENGTH_LONG).show();
-            TestClient.execute(sdf.format(beforDate));
-
-
-
-
+            TestClient.execute(Time);
 
 		climate_chart = (LineChart) getView().findViewById(R.id.chart1);
 		chart2 = (LineChart) getView().findViewById(R.id.chart2);
-
-
-
-
-		//TextView txtResult = (TextView) this.getView().findViewById(R.id.textView1);
-		//txtResult.setText(value);
-		//顯示邊界
-//		chart1.setDrawBorders(true);
-		//設定資料
-//		List<Entry> entries = new ArrayList<>();
-//		for (int i = 0; i < 10; i++) {
-//			entries.add(new Entry(i, (float) (Math.random()) * 80));
-//		}
-//		//一個LineDataSet就是一條線
-//		LineDataSet lineDataSet = new LineDataSet(entries, "溫度");
-//		LineData data = new LineData(lineDataSet);
-//		chart1.setData(data);
-		//climateChart();
-
-
-
-
 	}
 
 
@@ -257,6 +241,7 @@ public class HistoricalChartFragment extends Fragment {
                 //st = con.createStatement();
                 String sql;
                 sql = "select * from sensor_records where read_time>='" + params[0] + "' order by read_time desc";
+				//sql ="select  sensor_category,sensor_value,read_time from  sensor_records where (sensor_category='climate'or sensor_category='pm2.5'or sensor_category='nh3'or sensor_category='h2s'or sensor_category='humidity'or sensor_category='co2'or sensor_category='ch4' )and read_time>='2019-04-18 00:00:00' AND read_time<='2019-05-22 14:27:00' order by read_time desc";
                 //ps = con.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 //            //STEP 5: Extract data from result set
                 Log.e("executeQuery!", sql);
@@ -316,37 +301,44 @@ public class HistoricalChartFragment extends Fragment {
 				//HashMap<String, String> sensor_data_hash_map = new HashMap<String, String>();
 
 					//sensor_data_hash_map =new IdentityHashMap<String,Object>();
-                    for (int i = 0; i < ID; i++) {
+                    for (int i = 0; i < ID; i+=1000) {
 						//Log.e("IdentityHashMap", sensor_category_arry[i] + ":" + sensor_value_arry[i]);//String.valueOf(i));
 						//sensor_data_hash_map.put(sensor_category_arry[i], sensor_value_arry[i]);
 						if (sensor_category_arry[i].equals("climate")) {
 							//climate_array[i] = sensor_value_arry[i];
 							climate_arraylist.add(sensor_value_arry[i]);
-							Log.e("climate_arraylist",sensor_value_arry[i]);
+							climate_time_arraylist.add(read_time_arry[i]);
+							Log.e("climate_arraylist+i:"+i,sensor_value_arry[i]);
 						} else if (sensor_category_arry[i].equals("pm2.5")) {
 							//pm25_arry[i] =sensor_value_arry[i];
 							pm25_arraylist.add(sensor_value_arry[i]);
-							Log.e("pm25_arraylist",sensor_value_arry[i]);
+							pm25_time_arraylist.add(read_time_arry[i]);
+							Log.e("pm25_arraylist+i:"+i,sensor_value_arry[i]);
 						} else if (sensor_category_arry[i].equals("nh3")) {
 							//nh3_arry[i] = sensor_value_arry[i];
 							nh3_arraylist.add(sensor_value_arry[i]);
-							Log.e("nh3_arraylist",sensor_value_arry[i]);
+							nh3_time_arraylist.add(read_time_arry[i]);
+							Log.e("nh3_arraylist+i:"+i,sensor_value_arry[i]);
 						} else if (sensor_category_arry[i].equals("h2s")) {
 							//h2s_arry[i] = sensor_value_arry[i];
 							h2s_arraylist.add(sensor_value_arry[i]);
-							Log.e("h2s_arraylist",sensor_value_arry[i]);
+							h2s_time_arraylist.add(read_time_arry[i]);
+							Log.e("h2s_arraylist+i:"+i,sensor_value_arry[i]);
 						} else if (sensor_category_arry[i].equals("humidity")) {
 							//humidity_arry[i] = sensor_value_arry[i];
 							humidity_arraylist.add(sensor_value_arry[i]);
-							Log.e("humidity_arraylist",sensor_value_arry[i]);
+							humidity_time_arraylist.add(read_time_arry[i]);
+							Log.e("humidity_arraylist+i"+i,sensor_value_arry[i]);
 						} else if (sensor_category_arry[i].equals("co2")) {
 							//co2_arry[i] = String.valueOf(sensor_value_arry[i]);
 							co2_arraylist.add(sensor_value_arry[i]);
-							Log.e("co2_arraylist",sensor_value_arry[i]);
+							co2_time_arraylist.add(read_time_arry[i]);
+							Log.e("co2_arraylist+i"+i,sensor_value_arry[i]);
 						} else if (sensor_category_arry[i].equals("ch4")) {
 							//ch4_arry[i] =sensor_value_arry[i];
 							ch4_arraylist.add(sensor_value_arry[i]);
-							Log.e("ch4_arraylist",sensor_value_arry[i]);
+							ch4_time_arraylist.add(read_time_arry[i]);
+							Log.e("ch4_arraylist+i"+i,sensor_value_arry[i]);
 						}
 					}
 //------------------------------------------------------------------------------------------------------------------------------------------------
@@ -361,7 +353,7 @@ public class HistoricalChartFragment extends Fragment {
                 Log.e("Exception有例外!", e.getMessage());
             }
             return stringBuilder.toString();
-        }
+		}
 
 
 
@@ -427,7 +419,7 @@ public class HistoricalChartFragment extends Fragment {
 			ArrayList<String> xVals = new ArrayList<String>();
 			// 从 0 到 count设置x轴的数据
 			for (int i = 0; i < count; i++) {
-				xVals.add((i) + "");
+				xVals.add(climate_time_arraylist.get(i) + "");
 			}
 			// 这个是y轴的数据
 			ArrayList<Entry> yVals = new ArrayList<Entry>();
