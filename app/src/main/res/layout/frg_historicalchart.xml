@@ -45,14 +45,33 @@
             </LinearLayout>
 
             <com.github.mikephil.charting.charts.LineChart
-                android:id="@+id/chart1"
+                android:id="@+id/climate_chart"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="44dp" />
-
             <com.github.mikephil.charting.charts.LineChart
-                android:id="@+id/chart2"
+                android:id="@+id/pm25_chart"
+                android:layout_width="match_parent"
+                android:layout_height="300dp" />
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/NH3_chart"
+                android:layout_width="match_parent"
+                android:layout_height="300dp" />
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/H2S_chart"
+                android:layout_width="match_parent"
+                android:layout_height="300dp" />
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/humidity_chart"
+                android:layout_width="match_parent"
+                android:layout_height="300dp" />
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/CO2_chart"
+                android:layout_width="match_parent"
+                android:layout_height="300dp" />
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/CH4_chart"
                 android:layout_width="match_parent"
                 android:layout_height="300dp" />
 
