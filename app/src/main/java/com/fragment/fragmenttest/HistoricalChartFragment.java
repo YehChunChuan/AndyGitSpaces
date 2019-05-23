@@ -885,6 +885,8 @@ public class HistoricalChartFragment extends Fragment {
 			// 返回左y轴对象。在水平的柱状图中，这是最上面的轴。
 			YAxis leftAxis = humidity_chart.getAxisLeft();
 			leftAxis.removeAllLimitLines();
+			HumidityYAxisValueFormatter custom = new HumidityYAxisValueFormatter();
+			humidity_chart.getAxisLeft().setValueFormatter(custom);
 
 			// 使网格线在虚线模式下绘制，例如像这个“------”。只有在硬件加速被关闭的情况下才会起作用。记住，硬件加速会提高性能。
 			//123
@@ -1001,6 +1003,8 @@ public class HistoricalChartFragment extends Fragment {
 			// 返回左y轴对象。在水平的柱状图中，这是最上面的轴。
 			YAxis leftAxis = CO2_chart.getAxisLeft();
 			leftAxis.removeAllLimitLines();
+			CO2YAxisValueFormatter custom = new CO2YAxisValueFormatter();
+			CO2_chart.getAxisLeft().setValueFormatter(custom);
 
 			// 使网格线在虚线模式下绘制，例如像这个“------”。只有在硬件加速被关闭的情况下才会起作用。记住，硬件加速会提高性能。
 			//123
@@ -1246,8 +1250,6 @@ public class HistoricalChartFragment extends Fragment {
 			return mFormat.format(value) + "℃ ";
 		}
 	}
-
-
 	public class PM25YAxisValueFormatter implements YAxisValueFormatter {
 
 		private DecimalFormat mFormat;
@@ -1261,6 +1263,36 @@ public class HistoricalChartFragment extends Fragment {
 		@Override
 		public String getFormattedValue(float value, YAxis yAxis) {
 			return mFormat.format(value) + " μg / m3";
+		}
+	}
+	public class HumidityYAxisValueFormatter implements YAxisValueFormatter {
+
+		private DecimalFormat mFormat;
+
+		@SuppressLint("NewApi")
+		public HumidityYAxisValueFormatter() {
+			mFormat = new DecimalFormat("###,###,###,##0");
+		}
+
+		@SuppressLint("NewApi")
+		@Override
+		public String getFormattedValue(float value, YAxis yAxis) {
+			return mFormat.format(value) + "%";
+		}
+	}
+	public class CO2YAxisValueFormatter implements YAxisValueFormatter {
+
+		private DecimalFormat mFormat;
+
+		@SuppressLint("NewApi")
+		public CO2YAxisValueFormatter() {
+			mFormat = new DecimalFormat("###,###,###,##0");
+		}
+
+		@SuppressLint("NewApi")
+		@Override
+		public String getFormattedValue(float value, YAxis yAxis) {
+			return mFormat.format(value) + "PPM";
 		}
 	}
 
