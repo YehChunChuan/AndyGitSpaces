@@ -32,12 +32,14 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.formatter.YAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.Utils;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -245,6 +247,11 @@ public class HistoricalChartFragment extends Fragment {
 				"Loading. Please wait...", false, false);
 		startcalendar = Calendar.getInstance();
 
+
+
+
+		initialChart(climate_chart);
+		addLineDataSet(climate_chart);
 		startTimeButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -252,85 +259,156 @@ public class HistoricalChartFragment extends Fragment {
 
 
 
-				climate_chart.setNoDataTextDescription("暫時尚無資料");
-				climate_chart.setTouchEnabled(true);
-				// 可拖曳
-				climate_chart.setDragEnabled(true);
-				// 可縮放
-				climate_chart.setScaleEnabled(true);
-				climate_chart.setDrawGridBackground(false);
-				climate_chart.setPinchZoom(true);
-				// 設定圖表的背景顏色
-				climate_chart.setBackgroundColor(Color.LTGRAY);
-				LineData data = new LineData();
-				// 資料顯示的顏色
-				data.setValueTextColor(Color.WHITE);
-				// 先增加一個空的資料，隨後往裡面動態新增
-				climate_chart.setData(data);
-				// 圖表的註解(只有當資料集存在時候才生效)
-				Legend l = climate_chart.getLegend();
-				// 可以修改圖表註解部分的位置
-				// l.setPosition(LegendPosition.LEFT_OF_CHART);
-				// 線性，也可是圓
-				l.setForm(Legend.LegendForm.LINE);
-				// 顏色
-				l.setTextColor(Color.WHITE);
-				// x座標軸
-				XAxis xl = climate_chart.getXAxis();
-				xl.setTextColor(Color.WHITE);
-				xl.setDrawGridLines(false);
-				xl.setAvoidFirstLastClipping(true);
-				// 幾個x座標軸之間才繪製？
-				xl.setSpaceBetweenLabels(5);
-				// 如果false，那麼x座標軸將不可見
-				xl.setEnabled(true);
-				// 將X座標軸放置在底部，預設是在頂部。
-				xl.setPosition(XAxis.XAxisPosition.BOTTOM);
-				// 圖表左邊的y座標軸線
-				YAxis leftAxis = climate_chart.getAxisLeft();
-				leftAxis.setTextColor(Color.WHITE);
-				// 最大值
-				leftAxis.setAxisMaxValue(90f);
-				// 最小值
-				leftAxis.setAxisMinValue(40f);
-				// 不一定要從0開始
-				leftAxis.setStartAtZero(false);
-				leftAxis.setDrawGridLines(true);
-				YAxis rightAxis = climate_chart.getAxisRight();
-				// 不顯示圖表的右邊y座標軸線
-				rightAxis.setEnabled(false);
+//				climate_chart.setNoDataTextDescription("暫時尚無資料");
+//				climate_chart.setTouchEnabled(true);
+//				// 可拖曳
+//				climate_chart.setDragEnabled(true);
+//				// 可縮放
+//				climate_chart.setScaleEnabled(true);
+//				climate_chart.setDrawGridBackground(false);
+//				climate_chart.setPinchZoom(true);
+//				// 設定圖表的背景顏色
+//				climate_chart.setBackgroundColor(Color.LTGRAY);
+//				LineData data = new LineData();
+//				// 資料顯示的顏色
+//				data.setValueTextColor(Color.WHITE);
+//				// 先增加一個空的資料，隨後往裡面動態新增
+//				climate_chart.setData(data);
+//				// 圖表的註解(只有當資料集存在時候才生效)
+//				Legend l = climate_chart.getLegend();
+//				// 可以修改圖表註解部分的位置
+//				// l.setPosition(LegendPosition.LEFT_OF_CHART);
+//				// 線性，也可是圓
+//				l.setForm(Legend.LegendForm.LINE);
+//				// 顏色
+//				l.setTextColor(Color.WHITE);
+//				// x座標軸
+//				XAxis xl = climate_chart.getXAxis();
+//				xl.setTextColor(Color.WHITE);
+//				xl.setDrawGridLines(false);
+//				xl.setAvoidFirstLastClipping(true);
+//				// 幾個x座標軸之間才繪製？
+//				xl.setSpaceBetweenLabels(5);
+//				// 如果false，那麼x座標軸將不可見
+//				xl.setEnabled(true);
+//				// 將X座標軸放置在底部，預設是在頂部。
+//				xl.setPosition(XAxis.XAxisPosition.BOTTOM);
+//				// 圖表左邊的y座標軸線
+//				YAxis leftAxis = climate_chart.getAxisLeft();
+//				leftAxis.setTextColor(Color.WHITE);
+//				// 最大值
+//				leftAxis.setAxisMaxValue(90f);
+//				// 最小值
+//				leftAxis.setAxisMinValue(40f);
+//				// 不一定要從0開始
+//				leftAxis.setStartAtZero(false);
+//				leftAxis.setDrawGridLines(true);
+//				YAxis rightAxis = climate_chart.getAxisRight();
+//				// 不顯示圖表的右邊y座標軸線
+//				rightAxis.setEnabled(false);
 
 
 				//region 動態畫圖
-				data = climate_chart.getData();//LineData data = climate_chart.getData();
-				// 每一個LineDataSet代表一條線，每張統計圖表可以同時存在若干個統計折線，這些折線像陣列一樣從0開始下標。
-				// 本例只有一個，那麼就是第0條折線
-				set1 = (LineDataSet) data.getDataSetByIndex(0);
-				// 如果該統計折線圖還沒有資料集，則建立一條出來，如果有則跳過此處程式碼。
-				if (set1 == null) {
-					set1 = createLineDataSet();
-					data.addDataSet(set1);
-				}
-				// 先新增一個x座標軸的值
-				// 因為是從0開始，data.getXValCount()每次返回的總是全部x座標軸上總數量，所以不必多此一舉的加1
-				data.addXValue(String.valueOf((data.getXValCount())));
-				// 生成隨機測試數
-				//float f = (float) ((Math.random()) *100);
-				// set.getEntryCount()獲得的是所有統計圖表上的資料點總量，
-				// 如從0開始一樣的陣列下標，那麼不必多次一舉的加1
-				set1 = (LineDataSet) data.getDataSetByIndex(0);
-				set1 = createLineDataSet();
-				float f = (float) ((Math.random()) * 100);
-				Entry entry = new Entry(f, set1.getEntryCount());
-				data.addEntry(entry, 0);
-				climate_chart.notifyDataSetChanged();
+//				data = climate_chart.getData();//LineData data = climate_chart.getData();
+//				// 每一個LineDataSet代表一條線，每張統計圖表可以同時存在若干個統計折線，這些折線像陣列一樣從0開始下標。
+//				// 本例只有一個，那麼就是第0條折線
+//				set1 = (LineDataSet) data.getDataSetByIndex(0);
+//				// 如果該統計折線圖還沒有資料集，則建立一條出來，如果有則跳過此處程式碼。
+//				if (set1 == null) {
+//					set1 = createLineDataSet();
+//					data.addDataSet(set1);
+//				}
+//				// 先新增一個x座標軸的值
+//				// 因為是從0開始，data.getXValCount()每次返回的總是全部x座標軸上總數量，所以不必多此一舉的加1
+//				data.addXValue(String.valueOf((data.getXValCount())));
+//				// 生成隨機測試數
+//				//float f = (float) ((Math.random()) *100);
+//				// set.getEntryCount()獲得的是所有統計圖表上的資料點總量，
+//				// 如從0開始一樣的陣列下標，那麼不必多次一舉的加1
+//				set1 = (LineDataSet) data.getDataSetByIndex(0);
+//				set1 = createLineDataSet();
+//				float f = (float) ((Math.random()) * 100);
+//				Entry entry = new Entry(f, set1.getEntryCount());
+//				data.addEntry(entry, 0);
+//				climate_chart.notifyDataSetChanged();
 				//endregion
 
 
+//				climate_chart.setDescription("Zhang Phil @ http://blog.csdn.net/zhangphil");
+//				climate_chart.setNoDataTextDescription("暂时尚无数据");
+//
+//				climate_chart.setTouchEnabled(true);
+//
+//				// 可拖曳
+//				climate_chart.setDragEnabled(true);
+//
+//				// 可缩放
+//				climate_chart.setScaleEnabled(true);
+//				climate_chart.setDrawGridBackground(false);
+//
+//				climate_chart.setPinchZoom(true);
+//
+//				// 设置图表的背景颜色
+//				climate_chart.setBackgroundColor(Color.LTGRAY);
+//
+//				LineData data = new LineData();
+//
+//				// 数据显示的颜色
+//				data.setValueTextColor(Color.WHITE);
+//
+//				// 先增加一个空的数据，随后往里面动态添加
+//				climate_chart.setData(data);
+//
+//				// 图表的注解(只有当数据集存在时候才生效)
+//				Legend l = climate_chart.getLegend();
+//
+//				// 可以修改图表注解部分的位置
+//				// l.setPosition(LegendPosition.LEFT_OF_CHART);
+//
+//				// 线性，也可是圆
+//				l.setForm(Legend.LegendForm.LINE);
+//
+//				// 颜色
+//				l.setTextColor(Color.WHITE);
+//
+//				// x坐标轴
+//				XAxis xl = climate_chart.getXAxis();
+//				xl.setTextColor(Color.WHITE);
+//				xl.setDrawGridLines(false);
+//				xl.setAvoidFirstLastClipping(true);
+//
+//				// 几个x坐标轴之间才绘制？
+//				xl.setSpaceBetweenLabels(5);
+//
+//				// 如果false，那么x坐标轴将不可见
+//				xl.setEnabled(true);
+//
+//				// 将X坐标轴放置在底部，默认是在顶部。
+//				xl.setPosition(XAxis.XAxisPosition.BOTTOM);
+//
+//				// 图表左边的y坐标轴线
+//				YAxis leftAxis = climate_chart.getAxisLeft();
+//				leftAxis.setTextColor(Color.WHITE);
+//
+//				// 最大值
+//				leftAxis.setAxisMaxValue(90f);
+//
+//				// 最小值
+//				leftAxis.setAxisMinValue(40f);
+//
+//				// 不一定要从0开始
+//				leftAxis.setStartAtZero(false);
+//
+//				leftAxis.setDrawGridLines(true);
+//
+//				YAxis rightAxis = climate_chart.getAxisRight();
+//				// 不显示图表的右边y坐标轴线
+//				rightAxis.setEnabled(false);
 
 
 
 
+				addEntry(climate_chart);
 
 				// TODO Auto-generated method stub
 				Calendar c = Calendar.getInstance();
@@ -352,7 +430,7 @@ public class HistoricalChartFragment extends Fragment {
 //
 //					}
 //				}, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
-				addEntry();
+				//addEntry();
 			}
 		});
 
@@ -392,6 +470,7 @@ public class HistoricalChartFragment extends Fragment {
 
 			}
 		});
+
 
 
 	}
@@ -440,7 +519,7 @@ public class HistoricalChartFragment extends Fragment {
 		LineData data = climate_chart.getData();
 // 每一個LineDataSet代表一條線，每張統計圖表可以同時存在若干個統計折線，這些折線像陣列一樣從0開始下標。
 // 本例只有一個，那麼就是第0條折線
-		 set1 = (LineDataSet) data.getDataSetByIndex(0);
+		ILineDataSet set1 =  data.getDataSetByIndex(0);
 // 如果該統計折線圖還沒有資料集，則建立一條出來，如果有則跳過此處程式碼。
 		if (set1 == null) {
 			set1 = createLineDataSet();
@@ -453,11 +532,36 @@ public class HistoricalChartFragment extends Fragment {
 		float f = (float) ((Math.random()) *100);
 // set.getEntryCount()獲得的是所有統計圖表上的資料點總量，
 // 如從0開始一樣的陣列下標，那麼不必多次一舉的加1
-		Entry entry = new Entry(f, set1.getEntryCount());
+
+
+
+		List<Entry> valsComp1 = new ArrayList<Entry>();
+
+		Entry c1e1 = new Entry(0f, (int) 100000f); // 0 == quarter 1
+		valsComp1.add(c1e1);
+
+// and so on ...
+
+		LineDataSet setComp1 = new LineDataSet(valsComp1, "Company 1");
+		setComp1.setAxisDependency(YAxis.AxisDependency.LEFT);
+
+
+		List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+		dataSets.add(setComp1);
+
+
+		//LineData data = new LineData(dataSets);
+		climate_chart.setData(data);
+		climate_chart.invalidate();
+
+
+
+
+
 // 往linedata裡面新增點。注意：addentry的第二個引數即代表折線的下標索引。
 // 因為本例只有一個統計折線，那麼就是第一個，其下標為0.
 // 如果同一張統計圖表中存在若干條統計折線，那麼必須分清是針對哪一條（依據下標索引）統計折線新增。
-		data.addEntry(entry, 0);
+		//data.addEntry(entry, 0);
 // 像ListView那樣的通知資料更新
 		climate_chart.notifyDataSetChanged();
 // 當前統計圖表中最多在x軸座標線上顯示的總量
@@ -1664,4 +1768,183 @@ public class HistoricalChartFragment extends Fragment {
 		return outTime;
 	}
 	//endregaion
+
+
+
+
+	// 高温线下标
+	private final int HIGH = 0;
+
+	// 低温线下标
+	private final int LOW = 1;
+
+	// 初始化图表
+	private void initialChart(LineChart mChart) {
+		mChart.setDescription("Zhang Phil @ http://blog.csdn.net/zhangphil");
+		mChart.setNoDataTextDescription("暂时尚无数据");
+
+		mChart.setTouchEnabled(true);
+
+		// 可拖曳
+		mChart.setDragEnabled(true);
+
+		// 可缩放
+		mChart.setScaleEnabled(true);
+		mChart.setDrawGridBackground(false);
+
+		mChart.setPinchZoom(true);
+
+		// 设置图表的背景颜色
+		mChart.setBackgroundColor(0xfff5f5f5);
+
+		// 图表的注解(只有当数据集存在时候才生效)
+		Legend l = mChart.getLegend();
+
+		// 可以修改图表注解部分的位置
+		// l.setPosition(LegendPosition.LEFT_OF_CHART);
+
+		// 线性，也可是圆
+		l.setForm(Legend.LegendForm.LINE);
+
+		// 颜色
+		l.setTextColor(Color.CYAN);
+
+		// x坐标轴
+		XAxis xl = mChart.getXAxis();
+		xl.setTextColor(0xff00897b);
+		xl.setDrawGridLines(false);
+		xl.setAvoidFirstLastClipping(true);
+
+		// 几个x坐标轴之间才绘制？
+		xl.setSpaceBetweenLabels(5);
+
+		// 如果false，那么x坐标轴将不可见
+		xl.setEnabled(true);
+
+		// 将X坐标轴放置在底部，默认是在顶部。
+		xl.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+		// 图表左边的y坐标轴线
+		YAxis leftAxis = mChart.getAxisLeft();
+		leftAxis.setTextColor(0xff37474f);
+
+		// 最大值
+		leftAxis.setAxisMaxValue(50f);
+
+		// 最小值
+		leftAxis.setAxisMinValue(-10f);
+
+		// 不一定要从0开始
+		leftAxis.setStartAtZero(false);
+
+		leftAxis.setDrawGridLines(true);
+
+		YAxis rightAxis = mChart.getAxisRight();
+		// 不显示图表的右边y坐标轴线
+		rightAxis.setEnabled(false);
+	}
+	// 为LineChart增加LineDataSet
+	private void addLineDataSet(LineChart mChart) {
+		LineData data = new LineData();
+
+		data.addDataSet(createHighLineDataSet());
+		data.addDataSet(createLowLineDataSet());
+
+		// 数据显示的颜色
+		// data.setValueTextColor(Color.WHITE);
+
+		// 先增加一个空的数据，随后往里面动态添加
+		mChart.setData(data);
+	}
+	// 同时为高温线和低温线添加进去一个坐标点
+	private void addEntry(LineChart mChart) {
+
+		LineData data = mChart.getData();
+
+		data.addXValue((data.getXValCount()) + "");
+
+		// 增加高温
+		LineDataSet highLineDataSet = (LineDataSet) data.getDataSetByIndex(HIGH);
+		float fh = (float) ((Math.random()) * 10 + 30);
+		Entry entryh = new Entry(fh, highLineDataSet.getEntryCount());
+		data.addEntry(entryh, HIGH);
+
+		// 增加低温
+		LineDataSet lowLineDataSet = (LineDataSet) data.getDataSetByIndex(LOW);
+		float fl = (float) ((Math.random()) * 10);
+		Entry entryl = new Entry(fl, lowLineDataSet.getEntryCount());
+		data.addEntry(entryl, LOW);
+
+		mChart.notifyDataSetChanged();
+
+		// 当前统计图表中最多在x轴坐标线上显示的总量
+		mChart.setVisibleXRangeMaximum(4);
+
+		mChart.moveViewToX(data.getXValCount() - 4);
+	}
+	// 初始化数据集，添加一条高温统计折线
+	private LineDataSet createHighLineDataSet() {
+
+		LineDataSet set = new LineDataSet(null, "高温");
+		set.setAxisDependency(YAxis.AxisDependency.LEFT);
+
+		// 折线的颜色
+		set.setColor(Color.RED);
+		set.setCircleColor(Color.YELLOW);
+		set.setLineWidth(5f);
+		set.setCircleSize(10f);
+		// set.setFillAlpha(128);
+		set.setCircleColorHole(Color.BLUE);
+		set.setHighLightColor(Color.GREEN);
+		set.setValueTextColor(Color.RED);
+		set.setValueTextSize(10f);
+		set.setDrawValues(true);
+
+		set.setValueFormatter(new ValueFormatter() {
+			@RequiresApi(api = Build.VERSION_CODES.N)
+			@Override
+			public String getFormattedValue(float value, Entry entry, int dataSetIndex,
+											ViewPortHandler viewPortHandler) {
+				DecimalFormat decimalFormat = new DecimalFormat(".0℃");
+				String s = "高温" + decimalFormat.format(value);
+				return s;
+			}
+		});
+
+		return set;
+	}
+
+
+	// 初始化数据集，添加一条低温统计折线
+	private LineDataSet createLowLineDataSet() {
+
+		LineDataSet set = new LineDataSet(null, "低温");
+		set.setAxisDependency(YAxis.AxisDependency.LEFT);
+
+		// 折线的颜色
+		set.setColor(ColorTemplate.getHoloBlue());
+		set.setCircleColor(Color.BLUE);
+		set.setLineWidth(1f);
+		set.setCircleSize(10f);
+		// set.setFillAlpha(128);
+		// set.setFillColor(ColorTemplate.getHoloBlue());
+		set.setHighLightColor(Color.DKGRAY);
+		set.setValueTextColor(Color.BLACK);
+		set.setCircleColorHole(Color.RED);
+		set.setValueTextSize(15f);
+		set.setDrawValues(true);
+
+		set.setValueFormatter(new ValueFormatter() {
+			@RequiresApi(api = Build.VERSION_CODES.N)
+			@Override
+			public String getFormattedValue(float value, Entry entry, int dataSetIndex,
+											ViewPortHandler viewPortHandler) {
+				DecimalFormat decimalFormat = new DecimalFormat(".0℃");
+				String s = "低温" + decimalFormat.format(value);
+				return s;
+			}
+		});
+
+		return set;
+	}
 }
