@@ -36,7 +36,6 @@ import com.github.mikephil.charting.formatter.YAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
@@ -49,7 +48,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.IdentityHashMap;
-import java.util.List;
 
 
 public class HistoricalChartFragment extends Fragment {
@@ -315,75 +313,68 @@ public class HistoricalChartFragment extends Fragment {
 
 	}
 //*********************************************************************************************************************************************
-	// 新增進去一個座標點
-	private void addEntry() {
-		LineData data = climate_chart.getData();
-// 每一個LineDataSet代表一條線，每張統計圖表可以同時存在若干個統計折線，這些折線像陣列一樣從0開始下標。
-// 本例只有一個，那麼就是第0條折線
-		ILineDataSet set1 =  data.getDataSetByIndex(0);
-// 如果該統計折線圖還沒有資料集，則建立一條出來，如果有則跳過此處程式碼。
-		if (set1 == null) {
-			set1 = createLineDataSet();
-			data.addDataSet(set1);
-		}
-// 先新增一個x座標軸的值
-// 因為是從0開始，data.getXValCount()每次返回的總是全部x座標軸上總數量，所以不必多此一舉的加1
-		data.addXValue(String.valueOf((data.getXValCount())));
-// 生成隨機測試數
-		float f = (float) ((Math.random()) *100);
-// set.getEntryCount()獲得的是所有統計圖表上的資料點總量，
-// 如從0開始一樣的陣列下標，那麼不必多次一舉的加1
-		List<Entry> valsComp1 = new ArrayList<Entry>();
-
-		Entry c1e1 = new Entry(0f, (int) 100000f); // 0 == quarter 1
-		valsComp1.add(c1e1);
-// and so on ...
-		LineDataSet setComp1 = new LineDataSet(valsComp1, "Company 1");
-		setComp1.setAxisDependency(YAxis.AxisDependency.LEFT);
-		List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-		dataSets.add(setComp1);
-		//LineData data = new LineData(dataSets);
-		climate_chart.setData(data);
-		climate_chart.invalidate();
-// 往linedata裡面新增點。注意：addentry的第二個引數即代表折線的下標索引。
-// 因為本例只有一個統計折線，那麼就是第一個，其下標為0.
-// 如果同一張統計圖表中存在若干條統計折線，那麼必須分清是針對哪一條（依據下標索引）統計折線新增。
-		//data.addEntry(entry, 0);
-// 像ListView那樣的通知資料更新
-		climate_chart.notifyDataSetChanged();
-// 當前統計圖表中最多在x軸座標線上顯示的總量
-		climate_chart.setVisibleXRangeMaximum(5);
-// y座標軸線最大值
-// mChart.setVisibleYRange(30, AxisDependency.LEFT);
-// 將座標移動到最新
-// 此程式碼將重新整理圖表的繪圖
-		climate_chart.moveViewToX(data.getXValCount() - 5);
-// mChart.moveViewTo(data.getXValCount()-7, 55f,
-// AxisDependency.LEFT);
-	}
-	// 初始化資料集，新增一條統計折線，可以簡單的理解是初始化y座標軸線上點的表徵
-	private LineDataSet createLineDataSet() {
-		LineDataSet set = new LineDataSet(null, "動態新增的資料");
-		set.setAxisDependency(YAxis.AxisDependency.LEFT);
-// 折線的顏色
-		set.setColor(ColorTemplate.getHoloBlue());
-		set.setCircleColor(Color.WHITE);
-		set.setLineWidth(10f);
-		set.setCircleSize(5f);
-		set.setFillAlpha(128);
-		set.setFillColor(ColorTemplate.getHoloBlue());
-		set.setHighLightColor(Color.GREEN);
-		set.setValueTextColor(Color.WHITE);
-		set.setValueTextSize(10f);
-		set.setDrawValues(true);
-		return set;
-	}
-
-
-
-
-
-
+//	// 新增進去一個座標點
+//	private void addEntry() {
+//		LineData data = climate_chart.getData();
+//// 每一個LineDataSet代表一條線，每張統計圖表可以同時存在若干個統計折線，這些折線像陣列一樣從0開始下標。
+//// 本例只有一個，那麼就是第0條折線
+//		ILineDataSet set1 =  data.getDataSetByIndex(0);
+//// 如果該統計折線圖還沒有資料集，則建立一條出來，如果有則跳過此處程式碼。
+//		if (set1 == null) {
+//			set1 = createLineDataSet();
+//			data.addDataSet(set1);
+//		}
+//// 先新增一個x座標軸的值
+//// 因為是從0開始，data.getXValCount()每次返回的總是全部x座標軸上總數量，所以不必多此一舉的加1
+//		data.addXValue(String.valueOf((data.getXValCount())));
+//// 生成隨機測試數
+//		float f = (float) ((Math.random()) *100);
+//// set.getEntryCount()獲得的是所有統計圖表上的資料點總量，
+//// 如從0開始一樣的陣列下標，那麼不必多次一舉的加1
+//		List<Entry> valsComp1 = new ArrayList<Entry>();
+//		Entry c1e1 = new Entry(0f, (int) 100000f); // 0 == quarter 1
+//		valsComp1.add(c1e1);
+//// and so on ...
+//		LineDataSet setComp1 = new LineDataSet(valsComp1, "Company 1");
+//		setComp1.setAxisDependency(YAxis.AxisDependency.LEFT);
+//		List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+//		dataSets.add(setComp1);
+//		//LineData data = new LineData(dataSets);
+//		climate_chart.setData(data);
+//		climate_chart.invalidate();
+//// 往linedata裡面新增點。注意：addentry的第二個引數即代表折線的下標索引。
+//// 因為本例只有一個統計折線，那麼就是第一個，其下標為0.
+//// 如果同一張統計圖表中存在若干條統計折線，那麼必須分清是針對哪一條（依據下標索引）統計折線新增。
+//		//data.addEntry(entry, 0);
+//// 像ListView那樣的通知資料更新
+//		climate_chart.notifyDataSetChanged();
+//// 當前統計圖表中最多在x軸座標線上顯示的總量
+//		climate_chart.setVisibleXRangeMaximum(5);
+//// y座標軸線最大值
+//// mChart.setVisibleYRange(30, AxisDependency.LEFT);
+//// 將座標移動到最新
+//// 此程式碼將重新整理圖表的繪圖
+//		climate_chart.moveViewToX(data.getXValCount() - 5);
+//// mChart.moveViewTo(data.getXValCount()-7, 55f,
+//// AxisDependency.LEFT);
+//	}
+//	// 初始化資料集，新增一條統計折線，可以簡單的理解是初始化y座標軸線上點的表徵
+//	private LineDataSet createLineDataSet() {
+//		LineDataSet set = new LineDataSet(null, "動態新增的資料");
+//		set.setAxisDependency(YAxis.AxisDependency.LEFT);
+//// 折線的顏色
+//		set.setColor(ColorTemplate.getHoloBlue());
+//		set.setCircleColor(Color.WHITE);
+//		set.setLineWidth(10f);
+//		set.setCircleSize(5f);
+//		set.setFillAlpha(128);
+//		set.setFillColor(ColorTemplate.getHoloBlue());
+//		set.setHighLightColor(Color.GREEN);
+//		set.setValueTextColor(Color.WHITE);
+//		set.setValueTextSize(10f);
+//		set.setDrawValues(true);
+//		return set;
+//	}
 //*************************************************************************************************************************************************
 	private String formateTime(int time) {
 
@@ -395,7 +386,6 @@ public class HistoricalChartFragment extends Fragment {
 		}
 		return timeStr;
 	}
-
 	private void updateDisplay(int N, int Y, int M, int D, int H, int m) {
 		switch (N) {
 			case 1:
@@ -420,7 +410,6 @@ public class HistoricalChartFragment extends Fragment {
 				break;
 		}
 	}
-
 
 	private ResultSet rs;
 
@@ -1521,76 +1510,54 @@ public class HistoricalChartFragment extends Fragment {
 //	}
 	//endregaion
 
-
-
-
 	// 高温线下标
 	private final int HIGH = 0;
-
 	// 低温线下标
-	private final int LOW = 1;
+	//private final int LOW = 1;
 
 	// 初始化图表
 	private void initialChart(LineChart mChart) {
-		mChart.setDescription("Zhang Phil @ http://blog.csdn.net/zhangphil");
-		mChart.setNoDataTextDescription("暂时尚无数据");
-
+		mChart.setDescription("Andy Yeh Github@ https://github.com/YehChunChuan/AndyGitSpaces");
+		mChart.setNoDataTextDescription("暫時無數據");
+		//觸碰有效
 		mChart.setTouchEnabled(true);
-
 		// 可拖曳
 		mChart.setDragEnabled(true);
-
 		// 可缩放
 		mChart.setScaleEnabled(true);
 		mChart.setDrawGridBackground(false);
-
 		mChart.setPinchZoom(true);
-
 		// 设置图表的背景颜色
 		mChart.setBackgroundColor(0xfff5f5f5);
-
 		// 图表的注解(只有当数据集存在时候才生效)
 		Legend l = mChart.getLegend();
-
 		// 可以修改图表注解部分的位置
 		// l.setPosition(LegendPosition.LEFT_OF_CHART);
-
 		// 线性，也可是圆
 		l.setForm(Legend.LegendForm.LINE);
-
 		// 颜色
 		l.setTextColor(Color.CYAN);
-
 		// x坐标轴
 		XAxis xl = mChart.getXAxis();
 		xl.setTextColor(0xff00897b);
 		xl.setDrawGridLines(false);
 		xl.setAvoidFirstLastClipping(true);
-
 		// 几个x坐标轴之间才绘制？
-		xl.setSpaceBetweenLabels(5);
-
+		xl.setSpaceBetweenLabels(1);
 		// 如果false，那么x坐标轴将不可见
 		xl.setEnabled(true);
-
 		// 将X坐标轴放置在底部，默认是在顶部。
 		xl.setPosition(XAxis.XAxisPosition.BOTTOM);
-
 		// 图表左边的y坐标轴线
 		YAxis leftAxis = mChart.getAxisLeft();
 		leftAxis.setTextColor(0xff37474f);
-
 		// 最大值
 		leftAxis.setAxisMaxValue(50f);
-
 		// 最小值
 		leftAxis.setAxisMinValue(-10f);
-
 		// 不一定要从0开始
 		leftAxis.setStartAtZero(false);
-
 		leftAxis.setDrawGridLines(true);
-
 		YAxis rightAxis = mChart.getAxisRight();
 		// 不显示图表的右边y坐标轴线
 		rightAxis.setEnabled(false);
