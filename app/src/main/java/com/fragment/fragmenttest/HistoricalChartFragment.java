@@ -281,12 +281,6 @@ public class HistoricalChartFragment extends Fragment {
 				//addEntry();
 			}
 		});
-
-
-
-
-
-
 		endTimeButton.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -322,46 +316,7 @@ public class HistoricalChartFragment extends Fragment {
 
 
 	}
-//	// 新增進去一個座標點
-//	private void addEntry() {
-//		LineData data = climate_chart.getData();
-//// 每一個LineDataSet代表一條線，每張統計圖表可以同時存在若干個統計折線，這些折線像陣列一樣從0開始下標。
-//// 本例只有一個，那麼就是第0條折線
-//		LineDataSet set = (LineDataSet) data.getDataSetByIndex(0);
-//// 如果該統計折線圖還沒有資料集，則建立一條出來，如果有則跳過此處程式碼。
-//		if (set == null) {
-//			set = createLineDataSet();
-//			data.addDataSet(set);
-//		}
-//// 先新增一個x座標軸的值
-//// 因為是從0開始，data.getXValCount()每次返回的總是全部x座標軸上總數量，所以不必多此一舉的加1
-//		data.addXValue(String.valueOf((data.getXValCount())));
-//// 生成隨機測試數
-//		float f = (float) ((Math.random()) * 100);
-//// set.getEntryCount()獲得的是所有統計圖表上的資料點總量，
-//// 如從0開始一樣的陣列下標，那麼不必多次一舉的加1
-//		Entry entry = new Entry(f, set.getEntryCount());
-//// 往linedata裡面新增點。注意：addentry的第二個引數即代表折線的下標索引。
-//// 因為本例只有一個統計折線，那麼就是第一個，其下標為0.
-//// 如果同一張統計圖表中存在若干條統計折線，那麼必須分清是針對哪一條（依據下標索引）統計折線新增。
-//		data.addEntry(entry, 0);
-//// 像ListView那樣的通知資料更新
-//		climate_chart.notifyDataSetChanged();
-//// 當前統計圖表中最多在x軸座標線上顯示的總量
-//		climate_chart.setVisibleXRangeMaximum(5);
-//// y座標軸線最大值
-//// mChart.setVisibleYRange(30, AxisDependency.LEFT);
-//// 將座標移動到最新
-//// 此程式碼將重新整理圖表的繪圖
-//		climate_chart.moveViewToX(data.getXValCount() - 5);
-//// mChart.moveViewTo(data.getXValCount()-7, 55f,
-//// AxisDependency.LEFT);
-//	}
 //*********************************************************************************************************************************************
-
-
-
-
 	// 新增進去一個座標點
 	private void addEntry() {
 		LineData data = climate_chart.getData();
@@ -380,32 +335,18 @@ public class HistoricalChartFragment extends Fragment {
 		float f = (float) ((Math.random()) *100);
 // set.getEntryCount()獲得的是所有統計圖表上的資料點總量，
 // 如從0開始一樣的陣列下標，那麼不必多次一舉的加1
-
-
-
 		List<Entry> valsComp1 = new ArrayList<Entry>();
 
 		Entry c1e1 = new Entry(0f, (int) 100000f); // 0 == quarter 1
 		valsComp1.add(c1e1);
-
 // and so on ...
-
 		LineDataSet setComp1 = new LineDataSet(valsComp1, "Company 1");
 		setComp1.setAxisDependency(YAxis.AxisDependency.LEFT);
-
-
 		List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
 		dataSets.add(setComp1);
-
-
 		//LineData data = new LineData(dataSets);
 		climate_chart.setData(data);
 		climate_chart.invalidate();
-
-
-
-
-
 // 往linedata裡面新增點。注意：addentry的第二個引數即代表折線的下標索引。
 // 因為本例只有一個統計折線，那麼就是第一個，其下標為0.
 // 如果同一張統計圖表中存在若干條統計折線，那麼必須分清是針對哪一條（依據下標索引）統計折線新增。
@@ -446,40 +387,6 @@ public class HistoricalChartFragment extends Fragment {
 
 
 //*************************************************************************************************************************************************
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//	// 初始化資料集，新增一條統計折線，可以簡單的理解是初始化y座標軸線上點的表徵
-//	private LineDataSet createLineDataSet() {
-//		LineDataSet set = new LineDataSet(null, "動態新增的資料");
-//		set.setAxisDependency(YAxis.AxisDependency.LEFT);
-//// 折線的顏色
-//		set.setColor(ColorTemplate.getHoloBlue());
-//		set.setCircleColor(Color.WHITE);
-//		set.setLineWidth(10f);
-//		set.setCircleSize(5f);
-//		set.setFillAlpha(128);
-//		set.setFillColor(ColorTemplate.getHoloBlue());
-//		set.setHighLightColor(Color.GREEN);
-//		set.setValueTextColor(Color.WHITE);
-//		set.setValueTextSize(10f);
-//		set.setDrawValues(true);
-//		return set;
-//	}
-
-
 	private String formateTime(int time) {
 
 		String timeStr = "";
@@ -665,8 +572,7 @@ public class HistoricalChartFragment extends Fragment {
 			}
 			return stringBuilder.toString();
 		}
-
-		//region 溫度Chart
+//region 溫度Chart
 		// 这个应该是设置数据的函数了
 		private void set_climate_Data(int count, float range) {
 			// 在图表执行动作时，为定制回调设置一个动作监听器。
@@ -1695,12 +1601,12 @@ public class HistoricalChartFragment extends Fragment {
 	private void addLineDataSet(LineChart mChart) {
 		LineData data = new LineData();
 
+		//高溫
 		data.addDataSet(createHighLineDataSet());
-		data.addDataSet(createLowLineDataSet());
-
+		//低溫
+//		data.addDataSet(createLowLineDataSet());
 		// 数据显示的颜色
 		// data.setValueTextColor(Color.WHITE);
-
 		// 先增加一个空的数据，随后往里面动态添加
 		mChart.setData(data);
 	}
@@ -1718,10 +1624,10 @@ public class HistoricalChartFragment extends Fragment {
 		data.addEntry(entryh, HIGH);
 
 		// 增加低温
-		LineDataSet lowLineDataSet = (LineDataSet) data.getDataSetByIndex(LOW);
-		float fl = (float) ((Math.random()) * 10);
-		Entry entryl = new Entry(fl, lowLineDataSet.getEntryCount());
-		data.addEntry(entryl, LOW);
+//		LineDataSet lowLineDataSet = (LineDataSet) data.getDataSetByIndex(LOW);
+//		float fl = (float) ((Math.random()) * 10);
+//		Entry entryl = new Entry(fl, lowLineDataSet.getEntryCount());
+//		data.addEntry(entryl, LOW);
 
 		mChart.notifyDataSetChanged();
 
@@ -1763,36 +1669,36 @@ public class HistoricalChartFragment extends Fragment {
 	}
 
 
-	// 初始化数据集，添加一条低温统计折线
-	private LineDataSet createLowLineDataSet() {
-
-		LineDataSet set = new LineDataSet(null, "低温");
-		set.setAxisDependency(YAxis.AxisDependency.LEFT);
-
-		// 折线的颜色
-		set.setColor(ColorTemplate.getHoloBlue());
-		set.setCircleColor(Color.BLUE);
-		set.setLineWidth(1f);
-		set.setCircleSize(10f);
-		// set.setFillAlpha(128);
-		// set.setFillColor(ColorTemplate.getHoloBlue());
-		set.setHighLightColor(Color.DKGRAY);
-		set.setValueTextColor(Color.BLACK);
-		set.setCircleColorHole(Color.RED);
-		set.setValueTextSize(15f);
-		set.setDrawValues(true);
-
-		set.setValueFormatter(new ValueFormatter() {
-			@RequiresApi(api = Build.VERSION_CODES.N)
-			@Override
-			public String getFormattedValue(float value, Entry entry, int dataSetIndex,
-											ViewPortHandler viewPortHandler) {
-				DecimalFormat decimalFormat = new DecimalFormat(".0℃");
-				String s = "低温" + decimalFormat.format(value);
-				return s;
-			}
-		});
-
-		return set;
-	}
+//	// 初始化数据集，添加一条低温统计折线
+//	private LineDataSet createLowLineDataSet() {
+//
+//		LineDataSet set = new LineDataSet(null, "低温");
+//		set.setAxisDependency(YAxis.AxisDependency.LEFT);
+//
+//		// 折线的颜色
+//		set.setColor(ColorTemplate.getHoloBlue());
+//		set.setCircleColor(Color.BLUE);
+//		set.setLineWidth(1f);
+//		set.setCircleSize(10f);
+//		// set.setFillAlpha(128);
+//		// set.setFillColor(ColorTemplate.getHoloBlue());
+//		set.setHighLightColor(Color.DKGRAY);
+//		set.setValueTextColor(Color.BLACK);
+//		set.setCircleColorHole(Color.RED);
+//		set.setValueTextSize(15f);
+//		set.setDrawValues(true);
+//
+//		set.setValueFormatter(new ValueFormatter() {
+//			@RequiresApi(api = Build.VERSION_CODES.N)
+//			@Override
+//			public String getFormattedValue(float value, Entry entry, int dataSetIndex,
+//											ViewPortHandler viewPortHandler) {
+//				DecimalFormat decimalFormat = new DecimalFormat(".0℃");
+//				String s = "低温" + decimalFormat.format(value);
+//				return s;
+//			}
+//		});
+//
+//		return set;
+//	}
 }
