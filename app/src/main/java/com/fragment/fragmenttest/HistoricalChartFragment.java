@@ -2,10 +2,12 @@ package com.fragment.fragmenttest;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.database.SQLException;
 import android.graphics.Color;
 import android.icu.text.DecimalFormat;
+import android.icu.util.Calendar;
 import android.net.ParseException;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -18,6 +20,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
@@ -122,6 +127,28 @@ public class HistoricalChartFragment extends Fragment {
 	private  WebView mWebView;
 	private ProgressDialog dialog;
 	private IdentityHashMap<String,Object> sensor_data_hash_map=null;
+	private Button startTimeButton;
+	private Button endTimeButton;
+	private TextView startTimeText;
+	private TextView endTimeText;
+
+	Calendar startcalendar;
+	Calendar endcalendar;
+
+	private int smYear;
+	private int smMonth;
+	private int smDay;
+	private int smh;
+	private int smm;
+
+	private int emYear;
+	private int emMonth;
+	private int emDay;
+	private int emh;
+	private int emm;
+
+	String ST="";
+	String ET="";
 
 
 	@Override
@@ -172,15 +199,6 @@ public class HistoricalChartFragment extends Fragment {
 		//記得要定義Layout View
 		//region 加入webview的使用
 		View v=inflater.inflate(R.layout.frg_historicalchart, container, false);
-//		mWebView = (WebView) v.findViewById(R.id.webview);
-//		mWebView.loadUrl("http://54.189.167.79/chart");
-//		// Enable Javascript
-//		WebSettings webSettings = mWebView.getSettings();
-//		webSettings.setJavaScriptEnabled(true);
-//		// Force links and redirects to open in the WebView instead of in a browser
-//		mWebView.setWebViewClient(new WebViewClient());
-		//endregion
-
 		return v;
 	}
 
@@ -215,25 +233,119 @@ public class HistoricalChartFragment extends Fragment {
 		humidity_chart = (LineChart) getView().findViewById(R.id.humidity_chart);
 		CO2_chart = (LineChart) getView().findViewById(R.id.CO2_chart);
 		CH4_chart = (LineChart) getView().findViewById(R.id.CH4_chart);
+		startTimeButton=(Button)getView().findViewById(R.id.startTimeButton);
+		endTimeButton=(Button)getView().findViewById(R.id.endTimeButton);
+		startTimeText=(TextView)getView().findViewById(R.id.startTimeText);
+		endTimeText=(TextView)getView().findViewById(R.id.endTimeText);
 
 		dialog = ProgressDialog.show(this.getContext(), "",
                     "Loading. Please wait...", false, false);
+		startcalendar = Calendar.getInstance();
 
-            //ProgressDialog pd3 = ProgressDialog.show(getActivity(), "提示", "正在資料查詢中", false, true);
+		startTimeButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Calendar c = Calendar.getInstance();
+				new DatePickerDialog(AC, new DatePickerDialog.OnDateSetListener() {
 
-//		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//		builder.setTitle("請輸入");     //標題
-//		builder.setIcon(android.R.drawable.btn_star);      //圖示
-//		builder.setPositiveButton("確認", new DialogInterface.OnClickListener() {
-//			@Override
-//			public void onClick(DialogInterface dialog, int which) {
-//				Toast.makeText(getActivity(), "dialog" , Toast.LENGTH_SHORT).show();
-//			}
-//		}).show();
+					@Override
+					public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+						// TODO Auto-generated method stub
+						//startTimeText.setText(year+"-"+(monthOfYear+1)+"-"+dayOfMonth);
+						final Calendar c = Calendar.getInstance();
+						smYear = year;
+						smMonth = monthOfYear;
+						smDay = dayOfMonth;
+
+						smh = c.get(Calendar.HOUR_OF_DAY);
+						smm = c.get(Calendar.MINUTE);
+						updateDisplay(1,smYear,smMonth,smDay,smh,smm);
+					}
+				}, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
+
+			}
+		});
+
+
+
+		endTimeButton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Calendar c = Calendar.getInstance();
+				new DatePickerDialog(AC, new DatePickerDialog.OnDateSetListener() {
+
+					@Override
+					public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+						// TODO Auto-generated method stub
+						//endTimeText.setText(year+"-"+(monthOfYear+1)+"-"+dayOfMonth);
+						final Calendar c = Calendar.getInstance();
+
+						emYear = year;
+						emMonth = monthOfYear;
+						emDay = dayOfMonth;
+						emh = c.get(Calendar.HOUR_OF_DAY);
+						emm = c.get(Calendar.MINUTE);
+						updateDisplay(2,emYear,emMonth,emDay,emh,emm);
+
+						PostgresqlTask TestClient = new PostgresqlTask();
+						TestClient.execute();
+						dialog = ProgressDialog.show(AC, "",
+								"Loading. Please wait...", false, false);
+						startcalendar = Calendar.getInstance();
+					}
+				}, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
+
+			}
+		});
+
+
+
+
+
+
 	}
 
-	//getApplicationContext()
 
+
+
+	private String formateTime(int time) {
+
+		String timeStr = "";
+		if (time < 10){
+			timeStr = "0" + String.valueOf(time);
+		}else {
+			timeStr = String.valueOf(time);
+		}
+		return timeStr;
+	}
+
+	private void updateDisplay(int N,int Y,int M,int D,int H,int m) {
+		switch (N) {
+			case 1:
+				startTimeText.setText(
+						new StringBuilder().append(Y).append("-")
+								.append(formateTime(M + 1)).append("-")
+								.append(formateTime(D)).append(" ")
+								.append(formateTime(H)).append(":")
+								.append(formateTime(m)));
+				ST = (String) startTimeText.getText();
+				Log.e("ST",ST);
+				break;
+			case 2:
+				endTimeText.setText(
+						new StringBuilder().append(Y).append("-")
+								.append(formateTime(M + 1)).append("-")
+								.append(formateTime(D)).append(" ")
+								.append(formateTime(H)).append(":")
+								.append(formateTime(m)));
+				ET = (String) endTimeText.getText();
+				Log.e("ET",ET);
+				break;
+		}
+	}
 
 
 	private ResultSet rs;
@@ -268,7 +380,7 @@ public class HistoricalChartFragment extends Fragment {
 				//System.out.println("Creating statement...");
 				//st = con.createStatement();
 				String sql;
-				sql = "select * from sensor_records where read_time>='" + params[0] + "' order by read_time desc";
+				sql = "select * from sensor_records where read_time>='" + ST +"' AND read_time<='"+ET +"' order by read_time desc";
 				//sql ="select  sensor_category,sensor_value,read_time from  sensor_records where (sensor_category='climate'or sensor_category='pm2.5'or sensor_category='nh3'or sensor_category='h2s'or sensor_category='humidity'or sensor_category='co2'or sensor_category='ch4' )and read_time>='2019-04-18 00:00:00' AND read_time<='2019-05-22 14:27:00' order by read_time desc";
 				//ps = con.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 //            //STEP 5: Extract data from result set
@@ -330,7 +442,7 @@ public class HistoricalChartFragment extends Fragment {
 				//HashMap<String, String> sensor_data_hash_map = new HashMap<String, String>();
 
 				//sensor_data_hash_map =new IdentityHashMap<String,Object>();
-				for (int i = 0; i < ID; i += 1) {
+				for (int i = 0; i < ID; i += 1000) {
 					//Log.e("IdentityHashMap", sensor_category_arry[i] + ":" + sensor_value_arry[i]);//String.valueOf(i));
 					//sensor_data_hash_map.put(sensor_category_arry[i], sensor_value_arry[i]);
 					if (sensor_category_arry[i].equals("climate")) {
@@ -384,8 +496,7 @@ public class HistoricalChartFragment extends Fragment {
 			return stringBuilder.toString();
 		}
 
-
-		//region 溫度Chart
+//region 溫度Chart
 		// 这个应该是设置数据的函数了
 		private void set_climate_Data(int count, float range) {
 			// 在图表执行动作时，为定制回调设置一个动作监听器。
