@@ -8,7 +8,6 @@ import android.database.SQLException;
 import android.graphics.Color;
 import android.icu.text.DecimalFormat;
 import android.icu.util.Calendar;
-import android.net.ParseException;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -51,7 +50,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.StringTokenizer;
 
 
 public class HistoricalChartFragment extends Fragment {
@@ -1493,34 +1491,34 @@ public class HistoricalChartFragment extends Fragment {
 		}
 	}
 
-	//regaion 取整點的方式
-	private String getInitialTime(String time) {
-		String hour = "00";//小时
-		String minutes = "00";//分钟
-		String outTime = "00:00";
-		StringTokenizer st = new StringTokenizer(time, ":");
-		List<String> inTime = new ArrayList<String>();
-		while (st.hasMoreElements()) {
-			inTime.add(st.nextToken());
-		}
-		hour = inTime.get(0).toString();
-		minutes = inTime.get(1).toString();
-		if (Integer.parseInt(minutes) > 30) {
-			hour = (Integer.parseInt(hour) + 1) + "";
-		}
-		outTime = hour + ":00";
-		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-
-		try {
-			outTime = sdf.format(sdf.parse(outTime));
-		} catch (ParseException e) {
-// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (java.text.ParseException e) {
-			e.printStackTrace();
-		}
-		return outTime;
-	}
+//	//regaion 取整點的方式
+//	private String getInitialTime(String time) {
+//		String hour = "00";//小时
+//		String minutes = "00";//分钟
+//		String outTime = "00:00";
+//		StringTokenizer st = new StringTokenizer(time, ":");
+//		List<String> inTime = new ArrayList<String>();
+//		while (st.hasMoreElements()) {
+//			inTime.add(st.nextToken());
+//		}
+//		hour = inTime.get(0).toString();
+//		minutes = inTime.get(1).toString();
+//		if (Integer.parseInt(minutes) > 30) {
+//			hour = (Integer.parseInt(hour) + 1) + "";
+//		}
+//		outTime = hour + ":00";
+//		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+//
+//		try {
+//			outTime = sdf.format(sdf.parse(outTime));
+//		} catch (ParseException e) {
+//// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (java.text.ParseException e) {
+//			e.printStackTrace();
+//		}
+//		return outTime;
+//	}
 	//endregaion
 
 
