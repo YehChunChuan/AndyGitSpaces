@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -35,6 +36,7 @@ import com.github.mikephil.charting.formatter.YAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.Utils;
 
 import java.sql.Connection;
@@ -124,9 +126,9 @@ public class HistoricalChartFragment extends Fragment {
 
 	//endregion
 
-	private  WebView mWebView;
+	private WebView mWebView;
 	private ProgressDialog dialog;
-	private IdentityHashMap<String,Object> sensor_data_hash_map=null;
+	private IdentityHashMap<String, Object> sensor_data_hash_map = null;
 	private Button startTimeButton;
 	private Button endTimeButton;
 	private TextView startTimeText;
@@ -147,9 +149,10 @@ public class HistoricalChartFragment extends Fragment {
 	private int emh;
 	private int emm;
 
-	String ST="";
-	String ET="";
+	private String ST = "";
+	private String ET = "";
 
+	private LineDataSet set1;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -198,7 +201,7 @@ public class HistoricalChartFragment extends Fragment {
 		Log.d("=====>", "HistoricalChartFragment onCreateView");
 		//記得要定義Layout View
 		//region 加入webview的使用
-		View v=inflater.inflate(R.layout.frg_historicalchart, container, false);
+		View v = inflater.inflate(R.layout.frg_historicalchart, container, false);
 		return v;
 	}
 
@@ -215,16 +218,16 @@ public class HistoricalChartFragment extends Fragment {
 			MainActivity activity = (MainActivity) fragmentActivity;
 		}
 		PostgresqlTask TestClient = new PostgresqlTask();
-            //TestClient.execute("2019-04-29 10:00:00");300000   600000   10000
-            tine=3600000;
+		//TestClient.execute("2019-04-29 10:00:00");300000   600000   10000
+		tine = 3600000;
 		sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			now=new Date();
-            beforDate = new Date(now.getTime() - tine);
-            //System.out.println(sdf.format(beforDate));
-			String Time = sdf.format(beforDate);
-            Log.e("現在時間減10分鐘:", Time);
-            //Toast.makeText(MainActivity.this, "現在時間減"+tine+"秒鐘:" + sdf.format(beforDate), Toast.LENGTH_LONG).show();
-            TestClient.execute(Time);
+		now = new Date();
+		beforDate = new Date(now.getTime() - tine);
+		//System.out.println(sdf.format(beforDate));
+		String Time = sdf.format(beforDate);
+		Log.e("現在時間減10分鐘:", Time);
+		//Toast.makeText(MainActivity.this, "現在時間減"+tine+"秒鐘:" + sdf.format(beforDate), Toast.LENGTH_LONG).show();
+		TestClient.execute(Time);
 
 		climate_chart = (LineChart) getView().findViewById(R.id.climate_chart);
 		PM25_chart = (LineChart) getView().findViewById(R.id.pm25_chart);
@@ -233,39 +236,128 @@ public class HistoricalChartFragment extends Fragment {
 		humidity_chart = (LineChart) getView().findViewById(R.id.humidity_chart);
 		CO2_chart = (LineChart) getView().findViewById(R.id.CO2_chart);
 		CH4_chart = (LineChart) getView().findViewById(R.id.CH4_chart);
-		startTimeButton=(Button)getView().findViewById(R.id.startTimeButton);
-		endTimeButton=(Button)getView().findViewById(R.id.endTimeButton);
-		startTimeText=(TextView)getView().findViewById(R.id.startTimeText);
-		endTimeText=(TextView)getView().findViewById(R.id.endTimeText);
+		startTimeButton = (Button) getView().findViewById(R.id.startTimeButton);
+		endTimeButton = (Button) getView().findViewById(R.id.endTimeButton);
+		startTimeText = (TextView) getView().findViewById(R.id.startTimeText);
+		endTimeText = (TextView) getView().findViewById(R.id.endTimeText);
 
 		dialog = ProgressDialog.show(this.getContext(), "",
-                    "Loading. Please wait...", false, false);
+				"Loading. Please wait...", false, false);
 		startcalendar = Calendar.getInstance();
 
 		startTimeButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+
+
+
+
+				climate_chart.setNoDataTextDescription("暫時尚無資料");
+				climate_chart.setTouchEnabled(true);
+				// 可拖曳
+				climate_chart.setDragEnabled(true);
+				// 可縮放
+				climate_chart.setScaleEnabled(true);
+				climate_chart.setDrawGridBackground(false);
+				climate_chart.setPinchZoom(true);
+				// 設定圖表的背景顏色
+				climate_chart.setBackgroundColor(Color.LTGRAY);
+				LineData data = new LineData();
+				// 資料顯示的顏色
+				data.setValueTextColor(Color.WHITE);
+				// 先增加一個空的資料，隨後往裡面動態新增
+				climate_chart.setData(data);
+				// 圖表的註解(只有當資料集存在時候才生效)
+				Legend l = climate_chart.getLegend();
+				// 可以修改圖表註解部分的位置
+				// l.setPosition(LegendPosition.LEFT_OF_CHART);
+				// 線性，也可是圓
+				l.setForm(Legend.LegendForm.LINE);
+				// 顏色
+				l.setTextColor(Color.WHITE);
+				// x座標軸
+				XAxis xl = climate_chart.getXAxis();
+				xl.setTextColor(Color.WHITE);
+				xl.setDrawGridLines(false);
+				xl.setAvoidFirstLastClipping(true);
+				// 幾個x座標軸之間才繪製？
+				xl.setSpaceBetweenLabels(5);
+				// 如果false，那麼x座標軸將不可見
+				xl.setEnabled(true);
+				// 將X座標軸放置在底部，預設是在頂部。
+				xl.setPosition(XAxis.XAxisPosition.BOTTOM);
+				// 圖表左邊的y座標軸線
+				YAxis leftAxis = climate_chart.getAxisLeft();
+				leftAxis.setTextColor(Color.WHITE);
+				// 最大值
+				leftAxis.setAxisMaxValue(90f);
+				// 最小值
+				leftAxis.setAxisMinValue(40f);
+				// 不一定要從0開始
+				leftAxis.setStartAtZero(false);
+				leftAxis.setDrawGridLines(true);
+				YAxis rightAxis = climate_chart.getAxisRight();
+				// 不顯示圖表的右邊y座標軸線
+				rightAxis.setEnabled(false);
+
+
+				//region 動態畫圖
+				data = climate_chart.getData();//LineData data = climate_chart.getData();
+				// 每一個LineDataSet代表一條線，每張統計圖表可以同時存在若干個統計折線，這些折線像陣列一樣從0開始下標。
+				// 本例只有一個，那麼就是第0條折線
+				set1 = (LineDataSet) data.getDataSetByIndex(0);
+				// 如果該統計折線圖還沒有資料集，則建立一條出來，如果有則跳過此處程式碼。
+				if (set1 == null) {
+					set1 = createLineDataSet();
+					data.addDataSet(set1);
+				}
+				// 先新增一個x座標軸的值
+				// 因為是從0開始，data.getXValCount()每次返回的總是全部x座標軸上總數量，所以不必多此一舉的加1
+				data.addXValue(String.valueOf((data.getXValCount())));
+				// 生成隨機測試數
+				//float f = (float) ((Math.random()) *100);
+				// set.getEntryCount()獲得的是所有統計圖表上的資料點總量，
+				// 如從0開始一樣的陣列下標，那麼不必多次一舉的加1
+				set1 = (LineDataSet) data.getDataSetByIndex(0);
+				set1 = createLineDataSet();
+				float f = (float) ((Math.random()) * 100);
+				Entry entry = new Entry(f, set1.getEntryCount());
+				data.addEntry(entry, 0);
+				climate_chart.notifyDataSetChanged();
+				//endregion
+
+
+
+
+
+
+
 				// TODO Auto-generated method stub
 				Calendar c = Calendar.getInstance();
-				new DatePickerDialog(AC, new DatePickerDialog.OnDateSetListener() {
-
-					@Override
-					public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-						// TODO Auto-generated method stub
-						//startTimeText.setText(year+"-"+(monthOfYear+1)+"-"+dayOfMonth);
-						final Calendar c = Calendar.getInstance();
-						smYear = year;
-						smMonth = monthOfYear;
-						smDay = dayOfMonth;
-
-						smh = c.get(Calendar.HOUR_OF_DAY);
-						smm = c.get(Calendar.MINUTE);
-						updateDisplay(1,smYear,smMonth,smDay,smh,smm);
-					}
-				}, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
-
+//				new DatePickerDialog(AC, new DatePickerDialog.OnDateSetListener() {
+//
+//					@Override
+//					public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+//						// TODO Auto-generated method stub
+//						//startTimeText.setText(year+"-"+(monthOfYear+1)+"-"+dayOfMonth);
+//						final Calendar c = Calendar.getInstance();
+//						smYear = year;
+//						smMonth = monthOfYear;
+//						smDay = dayOfMonth;
+//
+//						smh = c.get(Calendar.HOUR_OF_DAY);
+//						smm = c.get(Calendar.MINUTE);
+//						updateDisplay(1, smYear, smMonth, smDay, smh, smm);
+//
+//
+//					}
+//				}, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
+				addEntry();
 			}
 		});
+
+
+
 
 
 
@@ -288,7 +380,7 @@ public class HistoricalChartFragment extends Fragment {
 						emDay = dayOfMonth;
 						emh = c.get(Calendar.HOUR_OF_DAY);
 						emm = c.get(Calendar.MINUTE);
-						updateDisplay(2,emYear,emMonth,emDay,emh,emm);
+						updateDisplay(2, emYear, emMonth, emDay, emh, emm);
 
 						PostgresqlTask TestClient = new PostgresqlTask();
 						TestClient.execute();
@@ -302,27 +394,152 @@ public class HistoricalChartFragment extends Fragment {
 		});
 
 
+	}
+//	// 新增進去一個座標點
+//	private void addEntry() {
+//		LineData data = climate_chart.getData();
+//// 每一個LineDataSet代表一條線，每張統計圖表可以同時存在若干個統計折線，這些折線像陣列一樣從0開始下標。
+//// 本例只有一個，那麼就是第0條折線
+//		LineDataSet set = (LineDataSet) data.getDataSetByIndex(0);
+//// 如果該統計折線圖還沒有資料集，則建立一條出來，如果有則跳過此處程式碼。
+//		if (set == null) {
+//			set = createLineDataSet();
+//			data.addDataSet(set);
+//		}
+//// 先新增一個x座標軸的值
+//// 因為是從0開始，data.getXValCount()每次返回的總是全部x座標軸上總數量，所以不必多此一舉的加1
+//		data.addXValue(String.valueOf((data.getXValCount())));
+//// 生成隨機測試數
+//		float f = (float) ((Math.random()) * 100);
+//// set.getEntryCount()獲得的是所有統計圖表上的資料點總量，
+//// 如從0開始一樣的陣列下標，那麼不必多次一舉的加1
+//		Entry entry = new Entry(f, set.getEntryCount());
+//// 往linedata裡面新增點。注意：addentry的第二個引數即代表折線的下標索引。
+//// 因為本例只有一個統計折線，那麼就是第一個，其下標為0.
+//// 如果同一張統計圖表中存在若干條統計折線，那麼必須分清是針對哪一條（依據下標索引）統計折線新增。
+//		data.addEntry(entry, 0);
+//// 像ListView那樣的通知資料更新
+//		climate_chart.notifyDataSetChanged();
+//// 當前統計圖表中最多在x軸座標線上顯示的總量
+//		climate_chart.setVisibleXRangeMaximum(5);
+//// y座標軸線最大值
+//// mChart.setVisibleYRange(30, AxisDependency.LEFT);
+//// 將座標移動到最新
+//// 此程式碼將重新整理圖表的繪圖
+//		climate_chart.moveViewToX(data.getXValCount() - 5);
+//// mChart.moveViewTo(data.getXValCount()-7, 55f,
+//// AxisDependency.LEFT);
+//	}
+//*********************************************************************************************************************************************
 
 
 
 
+	// 新增進去一個座標點
+	private void addEntry() {
+		LineData data = climate_chart.getData();
+// 每一個LineDataSet代表一條線，每張統計圖表可以同時存在若干個統計折線，這些折線像陣列一樣從0開始下標。
+// 本例只有一個，那麼就是第0條折線
+		 set1 = (LineDataSet) data.getDataSetByIndex(0);
+// 如果該統計折線圖還沒有資料集，則建立一條出來，如果有則跳過此處程式碼。
+		if (set1 == null) {
+			set1 = createLineDataSet();
+			data.addDataSet(set1);
+		}
+// 先新增一個x座標軸的值
+// 因為是從0開始，data.getXValCount()每次返回的總是全部x座標軸上總數量，所以不必多此一舉的加1
+		data.addXValue(String.valueOf((data.getXValCount())));
+// 生成隨機測試數
+		float f = (float) ((Math.random()) *100);
+// set.getEntryCount()獲得的是所有統計圖表上的資料點總量，
+// 如從0開始一樣的陣列下標，那麼不必多次一舉的加1
+		Entry entry = new Entry(f, set1.getEntryCount());
+// 往linedata裡面新增點。注意：addentry的第二個引數即代表折線的下標索引。
+// 因為本例只有一個統計折線，那麼就是第一個，其下標為0.
+// 如果同一張統計圖表中存在若干條統計折線，那麼必須分清是針對哪一條（依據下標索引）統計折線新增。
+		data.addEntry(entry, 0);
+// 像ListView那樣的通知資料更新
+		climate_chart.notifyDataSetChanged();
+// 當前統計圖表中最多在x軸座標線上顯示的總量
+		climate_chart.setVisibleXRangeMaximum(5);
+// y座標軸線最大值
+// mChart.setVisibleYRange(30, AxisDependency.LEFT);
+// 將座標移動到最新
+// 此程式碼將重新整理圖表的繪圖
+		climate_chart.moveViewToX(data.getXValCount() - 5);
+// mChart.moveViewTo(data.getXValCount()-7, 55f,
+// AxisDependency.LEFT);
+	}
+	// 初始化資料集，新增一條統計折線，可以簡單的理解是初始化y座標軸線上點的表徵
+	private LineDataSet createLineDataSet() {
+		LineDataSet set = new LineDataSet(null, "動態新增的資料");
+		set.setAxisDependency(YAxis.AxisDependency.LEFT);
+// 折線的顏色
+		set.setColor(ColorTemplate.getHoloBlue());
+		set.setCircleColor(Color.WHITE);
+		set.setLineWidth(10f);
+		set.setCircleSize(5f);
+		set.setFillAlpha(128);
+		set.setFillColor(ColorTemplate.getHoloBlue());
+		set.setHighLightColor(Color.GREEN);
+		set.setValueTextColor(Color.WHITE);
+		set.setValueTextSize(10f);
+		set.setDrawValues(true);
+		return set;
 	}
 
 
+
+
+
+
+//*************************************************************************************************************************************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//	// 初始化資料集，新增一條統計折線，可以簡單的理解是初始化y座標軸線上點的表徵
+//	private LineDataSet createLineDataSet() {
+//		LineDataSet set = new LineDataSet(null, "動態新增的資料");
+//		set.setAxisDependency(YAxis.AxisDependency.LEFT);
+//// 折線的顏色
+//		set.setColor(ColorTemplate.getHoloBlue());
+//		set.setCircleColor(Color.WHITE);
+//		set.setLineWidth(10f);
+//		set.setCircleSize(5f);
+//		set.setFillAlpha(128);
+//		set.setFillColor(ColorTemplate.getHoloBlue());
+//		set.setHighLightColor(Color.GREEN);
+//		set.setValueTextColor(Color.WHITE);
+//		set.setValueTextSize(10f);
+//		set.setDrawValues(true);
+//		return set;
+//	}
 
 
 	private String formateTime(int time) {
 
 		String timeStr = "";
-		if (time < 10){
+		if (time < 10) {
 			timeStr = "0" + String.valueOf(time);
-		}else {
+		} else {
 			timeStr = String.valueOf(time);
 		}
 		return timeStr;
 	}
 
-	private void updateDisplay(int N,int Y,int M,int D,int H,int m) {
+	private void updateDisplay(int N, int Y, int M, int D, int H, int m) {
 		switch (N) {
 			case 1:
 				startTimeText.setText(
@@ -332,7 +549,7 @@ public class HistoricalChartFragment extends Fragment {
 								.append(formateTime(H)).append(":")
 								.append(formateTime(m)));
 				ST = (String) startTimeText.getText();
-				Log.e("ST",ST);
+				Log.e("ST", ST);
 				break;
 			case 2:
 				endTimeText.setText(
@@ -342,15 +559,16 @@ public class HistoricalChartFragment extends Fragment {
 								.append(formateTime(H)).append(":")
 								.append(formateTime(m)));
 				ET = (String) endTimeText.getText();
-				Log.e("ET",ET);
+				Log.e("ET", ET);
 				break;
 		}
 	}
 
 
 	private ResultSet rs;
+
 	//region AsyncTask連查資料庫與畫圖
-    private class PostgresqlTask extends AsyncTask<String, String, String> {
+	private class PostgresqlTask extends AsyncTask<String, String, String> {
 		@Override
 		public String doInBackground(String... params) {
 			Connection con = null;
@@ -380,7 +598,7 @@ public class HistoricalChartFragment extends Fragment {
 				//System.out.println("Creating statement...");
 				//st = con.createStatement();
 				String sql;
-				sql = "select * from sensor_records where read_time>='" + ST +"' AND read_time<='"+ET +"' order by read_time desc";
+				sql = "select * from sensor_records where read_time>='" + ST + "' AND read_time<='" + ET + "' order by read_time desc";
 				//sql ="select  sensor_category,sensor_value,read_time from  sensor_records where (sensor_category='climate'or sensor_category='pm2.5'or sensor_category='nh3'or sensor_category='h2s'or sensor_category='humidity'or sensor_category='co2'or sensor_category='ch4' )and read_time>='2019-04-18 00:00:00' AND read_time<='2019-05-22 14:27:00' order by read_time desc";
 				//ps = con.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 //            //STEP 5: Extract data from result set
@@ -496,7 +714,7 @@ public class HistoricalChartFragment extends Fragment {
 			return stringBuilder.toString();
 		}
 
-//region 溫度Chart
+		//region 溫度Chart
 		// 这个应该是设置数据的函数了
 		private void set_climate_Data(int count, float range) {
 			// 在图表执行动作时，为定制回调设置一个动作监听器。
@@ -575,7 +793,7 @@ public class HistoricalChartFragment extends Fragment {
 			}
 			// MPAC自定义的一种类
 			// create a dataset and give it a type
-			LineDataSet set1 = new LineDataSet(yVals, "溫度");
+			set1 = new LineDataSet(yVals, "溫度");
 			set1.setMode(LineDataSet.Mode.CUBIC_BEZIER);// 設定平滑曲線
 			// set1.setFillAlpha(110);
 			// set1.setFillColor(Color.RED);
@@ -609,7 +827,16 @@ public class HistoricalChartFragment extends Fragment {
 			// create a data object with the datasets
 			LineData data = new LineData(xVals, dataSets);
 			// set data
+
 			climate_chart.setData(data);
+
+			//region 動態畫圖
+			float f = (float) ((Math.random()) * 100);
+			Entry entry = new Entry(f, set1.getEntryCount());
+			data.addEntry(entry, 0);
+			//endregion
+
+			climate_chart.notifyDataSetChanged();
 		}
 
 		//endregion
@@ -688,7 +915,7 @@ public class HistoricalChartFragment extends Fragment {
 			// 设置y轴的数据，在这里，是用random函数来生成的
 			for (int i = 0; i < count; i++) {
 				//String mult = climate_arraylist.get(i);
-				if(Float.parseFloat(pm25_arraylist.get(i))<100) {
+				if (Float.parseFloat(pm25_arraylist.get(i)) < 100) {
 					float val = (float) Float.parseFloat(pm25_arraylist.get(i));//(float) // (Math.random() * mult) + 3;// + (float)
 					//Log.e("set_PM25_Data","畫Y軸:"+pm25_arraylist.get(i));
 					// ((mult *
@@ -803,8 +1030,7 @@ public class HistoricalChartFragment extends Fragment {
 			// 设置y轴的数据，在这里，是用random函数来生成的
 			for (int i = 0; i < count; i++) {
 				//String mult = climate_arraylist.get(i);
-				if((float) Float.parseFloat(nh3_arraylist.get(i))<10)
-				{
+				if ((float) Float.parseFloat(nh3_arraylist.get(i)) < 10) {
 					float val = (float) Float.parseFloat(nh3_arraylist.get(i));//(float) // (Math.random() * mult) + 3;// + (float)
 					// ((mult *
 					// 0.1) / 10);
@@ -1031,7 +1257,7 @@ public class HistoricalChartFragment extends Fragment {
 			ArrayList<String> xVals = new ArrayList<String>();
 			// 从 0 到 count设置x轴的数据
 			for (int i = 0; i < count; i++) {
-				xVals.add(humidity_time_arraylist .get(i) + "");
+				xVals.add(humidity_time_arraylist.get(i) + "");
 			}
 			// 这个是y轴的数据
 			ArrayList<Entry> yVals = new ArrayList<Entry>();
@@ -1271,8 +1497,7 @@ public class HistoricalChartFragment extends Fragment {
 			// 设置y轴的数据，在这里，是用random函数来生成的
 			for (int i = 0; i < count; i++) {
 				//String mult = climate_arraylist.get(i);
-				if (Float.parseFloat(ch4_arraylist.get(i))<2)
-				{
+				if (Float.parseFloat(ch4_arraylist.get(i)) < 2) {
 					float val = (float) Float.parseFloat(ch4_arraylist.get(i));//(float) // (Math.random() * mult) + 3;// + (float)
 					// ((mult *
 					// 0.1) / 10);
@@ -1326,14 +1551,14 @@ public class HistoricalChartFragment extends Fragment {
 //            System.out.println("result: " + result);
 			try {
 				//顯示
-				set_climate_Data(climate_arraylist.size(), 0);
+//				set_climate_Data(climate_arraylist.size(), 0);
 				dialog.dismiss();
-				set_PM25_Data(pm25_arraylist.size(), 0);
-				set_NH3_Data(nh3_arraylist.size(), 0);
-				set_H2S_Data(h2s_arraylist.size(), 0);
-				set_humidity_Data(humidity_arraylist .size(), 0);
-				set_CO2_Data(co2_arraylist .size(), 0);
-				set_CH4_Data(ch4_arraylist .size(), 0);
+//				set_PM25_Data(pm25_arraylist.size(), 0);
+//				set_NH3_Data(nh3_arraylist.size(), 0);
+//				set_H2S_Data(h2s_arraylist.size(), 0);
+//				set_humidity_Data(humidity_arraylist .size(), 0);
+//				set_CO2_Data(co2_arraylist .size(), 0);
+//				set_CH4_Data(ch4_arraylist .size(), 0);
 				//Log.e("set_PM25_Data","開始呼叫");
 //-------------------------------------------------------------------------------------------------------------------------
 
@@ -1361,6 +1586,7 @@ public class HistoricalChartFragment extends Fragment {
 			return mFormat.format(value) + "℃ ";
 		}
 	}
+
 	public class PM25YAxisValueFormatter implements YAxisValueFormatter {
 
 		private DecimalFormat mFormat;
@@ -1376,6 +1602,7 @@ public class HistoricalChartFragment extends Fragment {
 			return mFormat.format(value) + " μg / m3";
 		}
 	}
+
 	public class HumidityYAxisValueFormatter implements YAxisValueFormatter {
 
 		private DecimalFormat mFormat;
@@ -1391,6 +1618,7 @@ public class HistoricalChartFragment extends Fragment {
 			return mFormat.format(value) + "%";
 		}
 	}
+
 	public class CO2YAxisValueFormatter implements YAxisValueFormatter {
 
 		private DecimalFormat mFormat;
