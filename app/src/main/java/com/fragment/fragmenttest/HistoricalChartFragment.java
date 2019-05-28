@@ -248,32 +248,32 @@ public class HistoricalChartFragment extends Fragment {
 
 		initialChart(climate_chart);
 		addLineDataSet(climate_chart);
+
+
 		startTimeButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-
-				addEntry(climate_chart);
-
+				//addEntry(climate_chart);
 				// TODO Auto-generated method stub
 				Calendar c = Calendar.getInstance();
-//				new DatePickerDialog(AC, new DatePickerDialog.OnDateSetListener() {
-//
-//					@Override
-//					public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-//						// TODO Auto-generated method stub
-//						//startTimeText.setText(year+"-"+(monthOfYear+1)+"-"+dayOfMonth);
-//						final Calendar c = Calendar.getInstance();
-//						smYear = year;
-//						smMonth = monthOfYear;
-//						smDay = dayOfMonth;
-//
-//						smh = c.get(Calendar.HOUR_OF_DAY);
-//						smm = c.get(Calendar.MINUTE);
-//						updateDisplay(1, smYear, smMonth, smDay, smh, smm);
-//
-//
-//					}
-//				}, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
+				new DatePickerDialog(AC, new DatePickerDialog.OnDateSetListener() {
+
+					@Override
+					public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+						// TODO Auto-generated method stub
+						//startTimeText.setText(year+"-"+(monthOfYear+1)+"-"+dayOfMonth);
+						final Calendar c = Calendar.getInstance();
+						smYear = year;
+						smMonth = monthOfYear;
+						smDay = dayOfMonth;
+
+						smh = c.get(Calendar.HOUR_OF_DAY);
+						smm = c.get(Calendar.MINUTE);
+						updateDisplay(1, smYear, smMonth, smDay, smh, smm);
+
+
+					}
+				}, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
 				//addEntry();
 			}
 		});
@@ -444,7 +444,8 @@ public class HistoricalChartFragment extends Fragment {
 				//System.out.println("Creating statement...");
 				//st = con.createStatement();
 				String sql;
-				sql = "select * from sensor_records where read_time>='" + ST + "' AND read_time<='" + ET + "' order by read_time desc";
+				//sql = "select * from sensor_records where read_time>='" + ST + "' AND read_time<='" + ET + "' order by read_time desc";
+				sql = "select * from sensor_records where read_time>='" + beforDate + "' order by read_time desc";
 				//sql ="select  sensor_category,sensor_value,read_time from  sensor_records where (sensor_category='climate'or sensor_category='pm2.5'or sensor_category='nh3'or sensor_category='h2s'or sensor_category='humidity'or sensor_category='co2'or sensor_category='ch4' )and read_time>='2019-04-18 00:00:00' AND read_time<='2019-05-22 14:27:00' order by read_time desc";
 				//ps = con.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 //            //STEP 5: Extract data from result set
@@ -513,6 +514,7 @@ public class HistoricalChartFragment extends Fragment {
 						//climate_array[i] = sensor_value_arry[i];
 						climate_arraylist.add(sensor_value_arry[i]);
 						climate_time_arraylist.add(read_time_arry[i]);
+						//addEntry(climate_chart,sensor_value_arry[i]);
 						Log.e("climate_arraylist+i:" + i, sensor_value_arry[i]);
 					} else if (sensor_category_arry[i].equals("pm2.5")) {
 						//pm25_arry[i] =sensor_value_arry[i];
@@ -1396,7 +1398,11 @@ public class HistoricalChartFragment extends Fragment {
 //            System.out.println("result: " + result);
 			try {
 				//顯示
-//				set_climate_Data(climate_arraylist.size(), 0);
+				for (int i=0;i<climate_arraylist.size();i++){
+					addEntry(climate_chart, climate_arraylist.get(i));
+				}
+
+				set_climate_Data(climate_arraylist.size(), 0);
 				dialog.dismiss();
 //				set_PM25_Data(pm25_arraylist.size(), 0);
 //				set_NH3_Data(nh3_arraylist.size(), 0);
@@ -1556,7 +1562,7 @@ public class HistoricalChartFragment extends Fragment {
 		// 最小值
 		leftAxis.setAxisMinValue(-10f);
 		// 不一定要从0开始
-		leftAxis.setStartAtZero(false);
+		//leftAxis.setStartAtZero(false);
 		leftAxis.setDrawGridLines(true);
 		YAxis rightAxis = mChart.getAxisRight();
 		// 不显示图表的右边y坐标轴线
@@ -1576,7 +1582,7 @@ public class HistoricalChartFragment extends Fragment {
 		mChart.setData(data);
 	}
 	// 同时为高温线和低温线添加进去一个坐标点
-	private void addEntry(LineChart mChart) {
+	private void addEntry(LineChart mChart,String humidity) {
 
 		LineData data = mChart.getData();
 
@@ -1584,7 +1590,7 @@ public class HistoricalChartFragment extends Fragment {
 
 		// 增加高温
 		LineDataSet highLineDataSet = (LineDataSet) data.getDataSetByIndex(HIGH);
-		float fh = (float) ((Math.random()) * 10 + 30);
+		float fh = (float) (Float.parseFloat(humidity));
 		Entry entryh = new Entry(fh, highLineDataSet.getEntryCount());
 		data.addEntry(entryh, HIGH);
 
@@ -1593,18 +1599,15 @@ public class HistoricalChartFragment extends Fragment {
 //		float fl = (float) ((Math.random()) * 10);
 //		Entry entryl = new Entry(fl, lowLineDataSet.getEntryCount());
 //		data.addEntry(entryl, LOW);
-
 		mChart.notifyDataSetChanged();
-
 		// 当前统计图表中最多在x轴坐标线上显示的总量
-		mChart.setVisibleXRangeMaximum(4);
-
-		mChart.moveViewToX(data.getXValCount() - 4);
+		mChart.setVisibleXRangeMaximum(100);
+		mChart.moveViewToX(data.getXValCount() - 100);
 	}
 	// 初始化数据集，添加一条高温统计折线
 	private LineDataSet createHighLineDataSet() {
 
-		LineDataSet set = new LineDataSet(null, "高温");
+		LineDataSet set = new LineDataSet(null, "溫度");
 		set.setAxisDependency(YAxis.AxisDependency.LEFT);
 
 		// 折线的颜色
@@ -1625,7 +1628,7 @@ public class HistoricalChartFragment extends Fragment {
 			public String getFormattedValue(float value, Entry entry, int dataSetIndex,
 											ViewPortHandler viewPortHandler) {
 				DecimalFormat decimalFormat = new DecimalFormat(".0℃");
-				String s = "高温" + decimalFormat.format(value);
+				String s = "溫度" + decimalFormat.format(value);
 				return s;
 			}
 		});
