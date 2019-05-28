@@ -248,6 +248,9 @@ public class HistoricalChartFragment extends Fragment {
 
 		initialChart(climate_chart);
 		addLineDataSet(climate_chart);
+		initialChart(PM25_chart);
+		addLineDataSet(PM25_chart);
+
 
 
 		startTimeButton.setOnClickListener(new View.OnClickListener() {
@@ -444,8 +447,8 @@ public class HistoricalChartFragment extends Fragment {
 				//System.out.println("Creating statement...");
 				//st = con.createStatement();
 				String sql;
-				//sql = "select * from sensor_records where read_time>='" + ST + "' AND read_time<='" + ET + "' order by read_time desc";
-				sql = "select * from sensor_records where read_time>='" + beforDate + "' order by read_time desc";
+				sql = "select * from sensor_records where read_time>='" + ST + "' AND read_time<='" + ET + "' order by read_time desc";
+				//sql = "select * from sensor_records where read_time>='" + beforDate + "' order by read_time desc";
 				//sql ="select  sensor_category,sensor_value,read_time from  sensor_records where (sensor_category='climate'or sensor_category='pm2.5'or sensor_category='nh3'or sensor_category='h2s'or sensor_category='humidity'or sensor_category='co2'or sensor_category='ch4' )and read_time>='2019-04-18 00:00:00' AND read_time<='2019-05-22 14:27:00' order by read_time desc";
 				//ps = con.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 //            //STEP 5: Extract data from result set
@@ -923,7 +926,7 @@ public class HistoricalChartFragment extends Fragment {
 			NH3_chart.setData(data);
 		}
 
-		//endregion
+		//endregion 123132
 //region H2S_Chart
 		private void set_H2S_Data(int count, float range) {
 			// 在图表执行动作时，为定制回调设置一个动作监听器。
@@ -1402,7 +1405,11 @@ public class HistoricalChartFragment extends Fragment {
 					addEntry(climate_chart, climate_arraylist.get(i));
 				}
 
-				set_climate_Data(climate_arraylist.size(), 0);
+
+				for (int i=0;i<climate_arraylist.size();i++){
+					addEntry(PM25_chart, climate_arraylist.get(i));
+				}
+				//set_climate_Data(climate_arraylist.size(), 0);
 				dialog.dismiss();
 //				set_PM25_Data(pm25_arraylist.size(), 0);
 //				set_NH3_Data(nh3_arraylist.size(), 0);
@@ -1560,7 +1567,8 @@ public class HistoricalChartFragment extends Fragment {
 		// 最大值
 		leftAxis.setAxisMaxValue(50f);
 		// 最小值
-		leftAxis.setAxisMinValue(-10f);
+		//leftAxis.setAxisMinValue(-10f);
+		leftAxis.setAxisMinValue(0f);
 		// 不一定要从0开始
 		//leftAxis.setStartAtZero(false);
 		leftAxis.setDrawGridLines(true);
@@ -1601,8 +1609,8 @@ public class HistoricalChartFragment extends Fragment {
 //		data.addEntry(entryl, LOW);
 		mChart.notifyDataSetChanged();
 		// 当前统计图表中最多在x轴坐标线上显示的总量
-		mChart.setVisibleXRangeMaximum(100);
-		mChart.moveViewToX(data.getXValCount() - 100);
+		mChart.setVisibleXRangeMaximum(10000);
+		mChart.moveViewToX(data.getXValCount() - 10000);
 	}
 	// 初始化数据集，添加一条高温统计折线
 	private LineDataSet createHighLineDataSet() {
