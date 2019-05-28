@@ -250,6 +250,18 @@ public class HistoricalChartFragment extends Fragment {
 		addLineDataSet(climate_chart);
 		initialChart(PM25_chart);
 		addLineDataSet(PM25_chart);
+		initialChart(NH3_chart);
+		addLineDataSet(NH3_chart);
+		initialChart(H2S_chart);
+		addLineDataSet(H2S_chart);
+		initialChart(humidity_chart);
+		addLineDataSet(humidity_chart);
+		initialChart(CO2_chart);
+		addLineDataSet(CO2_chart);
+		initialChart(CH4_chart);
+		addLineDataSet(CH4_chart);
+
+
 
 
 
@@ -1404,13 +1416,30 @@ public class HistoricalChartFragment extends Fragment {
 				for (int i=0;i<climate_arraylist.size();i++){
 					addEntry(climate_chart, climate_arraylist.get(i));
 				}
-
-
-				for (int i=0;i<climate_arraylist.size();i++){
-					addEntry(PM25_chart, climate_arraylist.get(i));
-				}
-				//set_climate_Data(climate_arraylist.size(), 0);
 				dialog.dismiss();
+				for (int i=0;i<climate_arraylist.size();i++){
+					addEntry(PM25_chart, pm25_arraylist.get(i));
+				}
+				for (int i=0;i<climate_arraylist.size();i++){
+					addEntry(NH3_chart, nh3_arraylist.get(i));
+				}
+				for (int i=0;i<climate_arraylist.size();i++){
+					addEntry(H2S_chart, h2s_arraylist.get(i));
+				}
+				for (int i=0;i<climate_arraylist.size();i++){
+					addEntry(humidity_chart, humidity_arraylist.get(i));
+				}
+				for (int i=0;i<climate_arraylist.size();i++){
+					addEntry(PM25_chart, pm25_arraylist.get(i));
+				}
+				for (int i=0;i<climate_arraylist.size();i++){
+					addEntry(CO2_chart, co2_arraylist.get(i));
+				}
+
+
+
+				//set_climate_Data(climate_arraylist.size(), 0);
+				//dialog.dismiss();
 //				set_PM25_Data(pm25_arraylist.size(), 0);
 //				set_NH3_Data(nh3_arraylist.size(), 0);
 //				set_H2S_Data(h2s_arraylist.size(), 0);
@@ -1428,7 +1457,7 @@ public class HistoricalChartFragment extends Fragment {
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //endregion
 
-
+//region 之前Chart加上單位的方式
 	public class ClimateYAxisValueFormatter implements YAxisValueFormatter {
 
 		private DecimalFormat mFormat;
@@ -1492,6 +1521,7 @@ public class HistoricalChartFragment extends Fragment {
 			return mFormat.format(value) + "PPM";
 		}
 	}
+//endregion
 
 //	//regaion 取整點的方式
 //	private String getInitialTime(String time) {
@@ -1549,10 +1579,10 @@ public class HistoricalChartFragment extends Fragment {
 		// 线性，也可是圆
 		l.setForm(Legend.LegendForm.LINE);
 		// 颜色
-		l.setTextColor(Color.CYAN);
+		l.setTextColor(Color.RED);
 		// x坐标轴
 		XAxis xl = mChart.getXAxis();
-		xl.setTextColor(0xff00897b);
+		xl.setTextColor(0xFF007FFF);
 		xl.setDrawGridLines(false);
 		xl.setAvoidFirstLastClipping(true);
 		// 几个x坐标轴之间才绘制？
@@ -1594,7 +1624,7 @@ public class HistoricalChartFragment extends Fragment {
 
 		LineData data = mChart.getData();
 
-		data.addXValue((data.getXValCount()) + "");
+		data.addXValue((data.getXValCount())+":" + humidity_time_arraylist.get(0) + "");
 
 		// 增加高温
 		LineDataSet highLineDataSet = (LineDataSet) data.getDataSetByIndex(HIGH);
@@ -1609,8 +1639,8 @@ public class HistoricalChartFragment extends Fragment {
 //		data.addEntry(entryl, LOW);
 		mChart.notifyDataSetChanged();
 		// 当前统计图表中最多在x轴坐标线上显示的总量
-		mChart.setVisibleXRangeMaximum(10000);
-		mChart.moveViewToX(data.getXValCount() - 10000);
+		mChart.setVisibleXRangeMaximum(100000000);
+		mChart.moveViewToX(data.getXValCount() - 100000000);
 	}
 	// 初始化数据集，添加一条高温统计折线
 	private LineDataSet createHighLineDataSet() {
