@@ -1649,15 +1649,15 @@ public class HistoricalChartFragment extends Fragment {
 		set.setAxisDependency(YAxis.AxisDependency.LEFT);
 
 		// 折线的颜色
-		set.setColor(Color.RED);
-		set.setCircleColor(Color.YELLOW);
-		set.setLineWidth(5f);
-		set.setCircleSize(10f);
+		set.setColor(Color.BLACK);
+		//set.setCircleColor(Color.YELLOW);
+		set.setLineWidth(1f);
+		//set.setCircleSize(10f);
 		// set.setFillAlpha(128);
 		set.setCircleColorHole(Color.BLUE);
-		set.setHighLightColor(Color.GREEN);
-		set.setValueTextColor(Color.RED);
-		set.setValueTextSize(10f);
+		//set.setHighLightColor(Color.GREEN);
+		set.setValueTextColor(Color.BLUE);
+		set.setValueTextSize(1f);
 		set.setDrawValues(true);
 
 		set.setValueFormatter(new ValueFormatter() {
